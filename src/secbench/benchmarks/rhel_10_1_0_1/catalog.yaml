@@ -1,0 +1,636 @@
+id: rhel_10_1_0_1
+title: CIS Red Hat Enterprise Linux 10 Benchmark
+version: 1.0.1
+target: rhel
+beta: true
+description: |
+  CIS Red Hat Enterprise Linux 10 Benchmark v1.0.1. Hardens filesystem,
+  software / patch management, mandatory access control, banners,
+  services, network parameters, logging and auditing, SSH and sudo
+  configuration, and local account hygiene.
+
+  Run on the local machine (when the app itself is on a Linux host) or
+  on a remote RHEL host reached over SSH from the Connect >
+  Infrastructure tab. Many checks require sudo on the target.
+
+sections:
+  - id: "1"
+    title: Initial Setup
+    controls:
+      - id: CIS-RHEL10-1.1.1.1
+        title: Ensure cramfs kernel module is not available
+        level: 1
+      - id: CIS-RHEL10-1.1.1.2
+        title: Ensure freevxfs kernel module is not available
+        level: 1
+      - id: CIS-RHEL10-1.1.1.3
+        title: Ensure hfs kernel module is not available
+        level: 1
+      - id: CIS-RHEL10-1.1.1.4
+        title: Ensure hfsplus kernel module is not available
+        level: 1
+      - id: CIS-RHEL10-1.1.1.5
+        title: Ensure jffs2 kernel module is not available
+        level: 1
+      - id: CIS-RHEL10-1.1.1.6
+        title: Ensure overlayfs kernel module is not available
+        level: 2
+      - id: CIS-RHEL10-1.1.1.7
+        title: Ensure squashfs kernel module is not available
+        level: 2
+      - id: CIS-RHEL10-1.1.1.8
+        title: Ensure udf kernel module is not available
+        level: 1
+      - id: CIS-RHEL10-1.1.1.9
+        title: Ensure usb-storage kernel module is not available
+        level: 2
+
+      - id: CIS-RHEL10-1.1.2.1.1
+        title: Ensure /tmp is a separate partition
+        level: 2
+      - id: CIS-RHEL10-1.1.2.1.2
+        title: Ensure nodev option set on /tmp partition
+        level: 1
+      - id: CIS-RHEL10-1.1.2.1.3
+        title: Ensure nosuid option set on /tmp partition
+        level: 1
+      - id: CIS-RHEL10-1.1.2.1.4
+        title: Ensure noexec option set on /tmp partition
+        level: 1
+      - id: CIS-RHEL10-1.1.2.2.1
+        title: Ensure /dev/shm is a separate partition
+        level: 1
+      - id: CIS-RHEL10-1.1.2.2.2
+        title: Ensure nodev option set on /dev/shm partition
+        level: 1
+      - id: CIS-RHEL10-1.1.2.2.3
+        title: Ensure nosuid option set on /dev/shm partition
+        level: 1
+      - id: CIS-RHEL10-1.1.2.2.4
+        title: Ensure noexec option set on /dev/shm partition
+        level: 1
+      - id: CIS-RHEL10-1.1.2.3.1
+        title: Ensure separate partition exists for /home
+        level: 2
+      - id: CIS-RHEL10-1.1.2.3.2
+        title: Ensure nodev option set on /home partition
+        level: 1
+      - id: CIS-RHEL10-1.1.2.3.3
+        title: Ensure nosuid option set on /home partition
+        level: 1
+      - id: CIS-RHEL10-1.1.2.4.1
+        title: Ensure separate partition exists for /var
+        level: 2
+      - id: CIS-RHEL10-1.1.2.4.2
+        title: Ensure nodev option set on /var partition
+        level: 1
+      - id: CIS-RHEL10-1.1.2.4.3
+        title: Ensure nosuid option set on /var partition
+        level: 1
+      - id: CIS-RHEL10-1.1.2.5.1
+        title: Ensure separate partition exists for /var/tmp
+        level: 2
+      - id: CIS-RHEL10-1.1.2.5.2
+        title: Ensure nodev option set on /var/tmp partition
+        level: 1
+      - id: CIS-RHEL10-1.1.2.5.3
+        title: Ensure nosuid option set on /var/tmp partition
+        level: 1
+      - id: CIS-RHEL10-1.1.2.5.4
+        title: Ensure noexec option set on /var/tmp partition
+        level: 1
+      - id: CIS-RHEL10-1.1.2.6.1
+        title: Ensure separate partition exists for /var/log
+        level: 2
+      - id: CIS-RHEL10-1.1.2.6.2
+        title: Ensure nodev option set on /var/log partition
+        level: 1
+      - id: CIS-RHEL10-1.1.2.6.3
+        title: Ensure nosuid option set on /var/log partition
+        level: 1
+      - id: CIS-RHEL10-1.1.2.6.4
+        title: Ensure noexec option set on /var/log partition
+        level: 1
+      - id: CIS-RHEL10-1.1.2.7.1
+        title: Ensure separate partition exists for /var/log/audit
+        level: 2
+      - id: CIS-RHEL10-1.1.2.7.2
+        title: Ensure nodev option set on /var/log/audit partition
+        level: 1
+      - id: CIS-RHEL10-1.1.2.7.3
+        title: Ensure nosuid option set on /var/log/audit partition
+        level: 1
+      - id: CIS-RHEL10-1.1.2.7.4
+        title: Ensure noexec option set on /var/log/audit partition
+        level: 1
+
+      - id: CIS-RHEL10-1.2.1.1
+        title: Ensure GPG keys are configured
+        level: 1
+        automated: false
+      - id: CIS-RHEL10-1.2.1.2
+        title: Ensure gpgcheck is globally activated
+        level: 1
+      - id: CIS-RHEL10-1.2.1.3
+        title: Ensure repo_gpgcheck is globally activated
+        level: 2
+      - id: CIS-RHEL10-1.2.2.1
+        title: Ensure updates, patches, and additional security software are installed
+        level: 1
+
+      - id: CIS-RHEL10-1.3.1
+        title: Ensure bootloader password is set
+        level: 1
+      - id: CIS-RHEL10-1.3.2
+        title: Ensure permissions on bootloader config are configured
+        level: 1
+
+      - id: CIS-RHEL10-1.4.1
+        title: Ensure ASLR is enabled
+        level: 1
+      - id: CIS-RHEL10-1.4.2
+        title: Ensure ptrace_scope is restricted
+        level: 1
+      - id: CIS-RHEL10-1.4.3
+        title: Ensure core dumps are restricted
+        level: 1
+      - id: CIS-RHEL10-1.4.4
+        title: Ensure prelink is not installed
+        level: 1
+      - id: CIS-RHEL10-1.4.5
+        title: Ensure Automatic Error Reporting (abrt) is not enabled
+        level: 2
+
+      - id: CIS-RHEL10-1.5.1.1
+        title: Ensure SELinux is installed
+        level: 2
+      - id: CIS-RHEL10-1.5.1.2
+        title: Ensure SELinux is not disabled in bootloader configuration
+        level: 1
+      - id: CIS-RHEL10-1.5.1.3
+        title: Ensure SELinux policy is configured (targeted/mls)
+        level: 1
+      - id: CIS-RHEL10-1.5.1.4
+        title: Ensure the SELinux mode is enforcing
+        level: 2
+      - id: CIS-RHEL10-1.5.1.5
+        title: Ensure no unconfined services exist
+        level: 1
+        automated: false
+      - id: CIS-RHEL10-1.5.1.6
+        title: Ensure SETroubleshoot is not installed
+        level: 2
+      - id: CIS-RHEL10-1.5.1.7
+        title: Ensure mcstrans is not installed
+        level: 1
+
+      - id: CIS-RHEL10-1.6.1
+        title: Ensure system-wide crypto policy is FUTURE or FIPS
+        level: 1
+      - id: CIS-RHEL10-1.6.2
+        title: Ensure system-wide crypto policy disables sha1 hash and signature support
+        level: 1
+
+      - id: CIS-RHEL10-1.7.1
+        title: Ensure message of the day is configured properly
+        level: 1
+      - id: CIS-RHEL10-1.7.2
+        title: Ensure local login warning banner is configured properly
+        level: 1
+      - id: CIS-RHEL10-1.7.3
+        title: Ensure remote login warning banner is configured properly
+        level: 1
+      - id: CIS-RHEL10-1.7.4
+        title: Ensure access to /etc/motd is configured
+        level: 1
+      - id: CIS-RHEL10-1.7.5
+        title: Ensure access to /etc/issue is configured
+        level: 1
+      - id: CIS-RHEL10-1.7.6
+        title: Ensure access to /etc/issue.net is configured
+        level: 1
+
+      - id: CIS-RHEL10-1.8.1
+        title: Ensure GNOME Display Manager is removed
+        level: 2
+      - id: CIS-RHEL10-1.8.2
+        title: Ensure GDM login banner is configured
+        level: 1
+        automated: false
+
+  - id: "2"
+    title: Services
+    controls:
+      - id: CIS-RHEL10-2.1.1
+        title: Ensure time synchronization is in use (chrony)
+        level: 1
+      - id: CIS-RHEL10-2.1.2
+        title: Ensure chrony is configured
+        level: 1
+        automated: false
+
+      - id: CIS-RHEL10-2.2.1
+        title: Ensure xinetd is not installed
+        level: 1
+      - id: CIS-RHEL10-2.2.2
+        title: Ensure X Window System is not installed
+        level: 2
+      - id: CIS-RHEL10-2.2.3
+        title: Ensure Avahi Server is not installed
+        level: 1
+      - id: CIS-RHEL10-2.2.4
+        title: Ensure CUPS is not installed
+        level: 2
+      - id: CIS-RHEL10-2.2.5
+        title: Ensure DHCP Server is not installed
+        level: 1
+      - id: CIS-RHEL10-2.2.6
+        title: Ensure DNS Server is not installed
+        level: 1
+      - id: CIS-RHEL10-2.2.7
+        title: Ensure VSFTPD Server is not installed
+        level: 1
+      - id: CIS-RHEL10-2.2.8
+        title: Ensure TFTP Server is not installed
+        level: 1
+      - id: CIS-RHEL10-2.2.9
+        title: Ensure web server is not installed
+        level: 1
+      - id: CIS-RHEL10-2.2.10
+        title: Ensure IMAP and POP3 server is not installed
+        level: 1
+      - id: CIS-RHEL10-2.2.11
+        title: Ensure Samba is not installed
+        level: 1
+      - id: CIS-RHEL10-2.2.12
+        title: Ensure HTTP Proxy Server is not installed
+        level: 1
+      - id: CIS-RHEL10-2.2.13
+        title: Ensure net-snmp is not installed
+        level: 1
+      - id: CIS-RHEL10-2.2.14
+        title: Ensure NIS server is not installed
+        level: 1
+      - id: CIS-RHEL10-2.2.15
+        title: Ensure telnet server is not installed
+        level: 1
+      - id: CIS-RHEL10-2.2.16
+        title: Ensure rsync-daemon is not in use
+        level: 1
+
+      - id: CIS-RHEL10-2.3.1
+        title: Ensure NIS Client is not installed
+        level: 1
+      - id: CIS-RHEL10-2.3.2
+        title: Ensure rsh client is not installed
+        level: 1
+      - id: CIS-RHEL10-2.3.3
+        title: Ensure talk client is not installed
+        level: 1
+      - id: CIS-RHEL10-2.3.4
+        title: Ensure telnet client is not installed
+        level: 1
+      - id: CIS-RHEL10-2.3.5
+        title: Ensure LDAP client is not installed
+        level: 1
+      - id: CIS-RHEL10-2.3.6
+        title: Ensure tftp client is not installed
+        level: 1
+
+      - id: CIS-RHEL10-2.4.1.1
+        title: Ensure cron daemon is enabled and running
+        level: 1
+      - id: CIS-RHEL10-2.4.1.2
+        title: Ensure permissions on /etc/crontab are configured
+        level: 1
+      - id: CIS-RHEL10-2.4.1.3
+        title: Ensure permissions on /etc/cron.hourly are configured
+        level: 1
+      - id: CIS-RHEL10-2.4.1.4
+        title: Ensure permissions on /etc/cron.daily are configured
+        level: 1
+      - id: CIS-RHEL10-2.4.1.5
+        title: Ensure permissions on /etc/cron.weekly are configured
+        level: 1
+      - id: CIS-RHEL10-2.4.1.6
+        title: Ensure permissions on /etc/cron.monthly are configured
+        level: 1
+      - id: CIS-RHEL10-2.4.1.7
+        title: Ensure permissions on /etc/cron.d are configured
+        level: 1
+      - id: CIS-RHEL10-2.4.1.8
+        title: Ensure cron is restricted to authorized users (cron.allow)
+        level: 1
+      - id: CIS-RHEL10-2.4.2.1
+        title: Ensure at is restricted to authorized users (at.allow)
+        level: 1
+
+  - id: "3"
+    title: Network Configuration
+    controls:
+      - id: CIS-RHEL10-3.1.1
+        title: Ensure IPv6 status is identified
+        level: 1
+        automated: false
+      - id: CIS-RHEL10-3.1.2
+        title: Ensure wireless interfaces are disabled
+        level: 1
+      - id: CIS-RHEL10-3.1.3
+        title: Ensure bluetooth services are not in use
+        level: 2
+
+      - id: CIS-RHEL10-3.2.1
+        title: Ensure dccp kernel module is not available
+        level: 2
+      - id: CIS-RHEL10-3.2.2
+        title: Ensure tipc kernel module is not available
+        level: 2
+      - id: CIS-RHEL10-3.2.3
+        title: Ensure rds kernel module is not available
+        level: 2
+      - id: CIS-RHEL10-3.2.4
+        title: Ensure sctp kernel module is not available
+        level: 2
+
+      - id: CIS-RHEL10-3.3.1
+        title: Ensure ip forwarding is disabled
+        level: 1
+      - id: CIS-RHEL10-3.3.2
+        title: Ensure packet redirect sending is disabled
+        level: 1
+      - id: CIS-RHEL10-3.3.3
+        title: Ensure bogus icmp responses are ignored
+        level: 1
+      - id: CIS-RHEL10-3.3.4
+        title: Ensure broadcast icmp requests are ignored
+        level: 1
+      - id: CIS-RHEL10-3.3.5
+        title: Ensure icmp redirects are not accepted
+        level: 1
+      - id: CIS-RHEL10-3.3.6
+        title: Ensure secure icmp redirects are not accepted
+        level: 1
+      - id: CIS-RHEL10-3.3.7
+        title: Ensure reverse path filtering is enabled
+        level: 1
+      - id: CIS-RHEL10-3.3.8
+        title: Ensure source routed packets are not accepted
+        level: 1
+      - id: CIS-RHEL10-3.3.9
+        title: Ensure suspicious packets are logged
+        level: 1
+      - id: CIS-RHEL10-3.3.10
+        title: Ensure tcp syn cookies is enabled
+        level: 1
+      - id: CIS-RHEL10-3.3.11
+        title: Ensure ipv6 router advertisements are not accepted
+        level: 1
+
+      - id: CIS-RHEL10-3.4.1.1
+        title: Ensure firewalld or nftables is installed
+        level: 1
+      - id: CIS-RHEL10-3.4.1.2
+        title: Ensure iptables-services is not installed
+        level: 1
+      - id: CIS-RHEL10-3.4.1.3
+        title: Ensure firewalld service is enabled and running
+        level: 1
+      - id: CIS-RHEL10-3.4.1.4
+        title: Ensure firewalld default zone is set
+        level: 1
+        automated: false
+
+  - id: "4"
+    title: Logging and Auditing
+    controls:
+      - id: CIS-RHEL10-4.1.1.1
+        title: Ensure auditd packages are installed
+        level: 2
+      - id: CIS-RHEL10-4.1.1.2
+        title: Ensure auditd service is enabled and active
+        level: 2
+      - id: CIS-RHEL10-4.1.1.3
+        title: Ensure auditing for processes that start prior to auditd is enabled
+        level: 2
+      - id: CIS-RHEL10-4.1.1.4
+        title: Ensure audit_backlog_limit is sufficient
+        level: 2
+      - id: CIS-RHEL10-4.1.2.1
+        title: Ensure audit log storage size is configured
+        level: 2
+        automated: false
+      - id: CIS-RHEL10-4.1.2.2
+        title: Ensure audit logs are not automatically deleted
+        level: 2
+        automated: false
+      - id: CIS-RHEL10-4.1.2.3
+        title: Ensure system is disabled when audit logs are full
+        level: 2
+        automated: false
+      - id: CIS-RHEL10-4.1.3.1
+        title: Ensure changes to system administration scope (sudoers) is collected
+        level: 2
+        automated: false
+      - id: CIS-RHEL10-4.1.3.2
+        title: Ensure events that modify the sudo log file are collected
+        level: 2
+        automated: false
+
+      - id: CIS-RHEL10-4.2.1.1
+        title: Ensure rsyslog is installed
+        level: 1
+      - id: CIS-RHEL10-4.2.1.2
+        title: Ensure rsyslog service is enabled
+        level: 1
+      - id: CIS-RHEL10-4.2.1.3
+        title: Ensure journald is configured to send logs to rsyslog
+        level: 1
+        automated: false
+      - id: CIS-RHEL10-4.2.2.1
+        title: Ensure systemd-journal-remote is installed
+        level: 1
+
+  - id: "5"
+    title: Access, Authentication and Authorization
+    controls:
+      - id: CIS-RHEL10-5.1.1
+        title: Ensure permissions on /etc/ssh/sshd_config are configured
+        level: 1
+      - id: CIS-RHEL10-5.1.2
+        title: Ensure permissions on SSH private host key files are configured
+        level: 1
+        automated: false
+      - id: CIS-RHEL10-5.1.3
+        title: Ensure permissions on SSH public host key files are configured
+        level: 1
+        automated: false
+      - id: CIS-RHEL10-5.1.4
+        title: Ensure SSH access is limited (AllowUsers / AllowGroups)
+        level: 1
+        automated: false
+      - id: CIS-RHEL10-5.1.5
+        title: Ensure SSH LogLevel is appropriate
+        level: 1
+      - id: CIS-RHEL10-5.1.6
+        title: Ensure SSH PAM is enabled
+        level: 1
+      - id: CIS-RHEL10-5.1.7
+        title: Ensure SSH root login is disabled
+        level: 1
+      - id: CIS-RHEL10-5.1.8
+        title: Ensure SSH HostbasedAuthentication is disabled
+        level: 1
+      - id: CIS-RHEL10-5.1.9
+        title: Ensure SSH PermitEmptyPasswords is disabled
+        level: 1
+      - id: CIS-RHEL10-5.1.10
+        title: Ensure SSH PermitUserEnvironment is disabled
+        level: 1
+      - id: CIS-RHEL10-5.1.11
+        title: Ensure SSH IgnoreRhosts is enabled
+        level: 1
+      - id: CIS-RHEL10-5.1.12
+        title: Ensure SSH X11 forwarding is disabled
+        level: 2
+      - id: CIS-RHEL10-5.1.13
+        title: Ensure SSH AllowTcpForwarding is disabled
+        level: 2
+      - id: CIS-RHEL10-5.1.14
+        title: Ensure SSH warning banner is configured
+        level: 1
+      - id: CIS-RHEL10-5.1.15
+        title: Ensure SSH MaxAuthTries is 4 or less
+        level: 1
+      - id: CIS-RHEL10-5.1.16
+        title: Ensure SSH MaxStartups is configured
+        level: 1
+        automated: false
+      - id: CIS-RHEL10-5.1.17
+        title: Ensure SSH MaxSessions is 10 or less
+        level: 1
+      - id: CIS-RHEL10-5.1.18
+        title: Ensure SSH LoginGraceTime is one minute or less
+        level: 1
+      - id: CIS-RHEL10-5.1.19
+        title: Ensure SSH Idle Timeout (ClientAliveInterval/CountMax)
+        level: 1
+        automated: false
+
+      - id: CIS-RHEL10-5.2.1
+        title: Ensure sudo is installed
+        level: 1
+      - id: CIS-RHEL10-5.2.2
+        title: Ensure sudo commands use pty
+        level: 1
+      - id: CIS-RHEL10-5.2.3
+        title: Ensure sudo log file exists
+        level: 1
+      - id: CIS-RHEL10-5.2.4
+        title: Ensure users must provide password for privilege escalation
+        level: 1
+      - id: CIS-RHEL10-5.2.5
+        title: Ensure re-authentication for privilege escalation is not disabled globally
+        level: 1
+      - id: CIS-RHEL10-5.2.6
+        title: Ensure sudo authentication timeout is configured correctly
+        level: 1
+      - id: CIS-RHEL10-5.2.7
+        title: Ensure access to the su command is restricted
+        level: 1
+
+      - id: CIS-RHEL10-5.4.1
+        title: Ensure password creation requirements are configured
+        level: 1
+      - id: CIS-RHEL10-5.4.2
+        title: Ensure lockout for failed password attempts is configured
+        level: 1
+      - id: CIS-RHEL10-5.4.3
+        title: Ensure password reuse is limited
+        level: 1
+      - id: CIS-RHEL10-5.4.4
+        title: Ensure password hashing algorithm is SHA-512 or yescrypt
+        level: 1
+
+      - id: CIS-RHEL10-5.5.1.1
+        title: Ensure password expiration is 365 days or less
+        level: 1
+      - id: CIS-RHEL10-5.5.1.2
+        title: Ensure minimum days between password changes is 1 or more
+        level: 1
+      - id: CIS-RHEL10-5.5.1.3
+        title: Ensure password expiration warning days is 7 or more
+        level: 1
+      - id: CIS-RHEL10-5.5.1.4
+        title: Ensure inactive password lock is 30 days or less
+        level: 1
+        automated: false
+      - id: CIS-RHEL10-5.5.4
+        title: Ensure default user umask is 027 or more restrictive
+        level: 1
+
+  - id: "6"
+    title: System Maintenance
+    controls:
+      - id: CIS-RHEL10-6.1.1
+        title: Ensure permissions on /etc/passwd are configured
+        level: 1
+      - id: CIS-RHEL10-6.1.2
+        title: Ensure permissions on /etc/passwd- are configured
+        level: 1
+      - id: CIS-RHEL10-6.1.3
+        title: Ensure permissions on /etc/group are configured
+        level: 1
+      - id: CIS-RHEL10-6.1.4
+        title: Ensure permissions on /etc/group- are configured
+        level: 1
+      - id: CIS-RHEL10-6.1.5
+        title: Ensure permissions on /etc/shadow are configured
+        level: 1
+      - id: CIS-RHEL10-6.1.6
+        title: Ensure permissions on /etc/shadow- are configured
+        level: 1
+      - id: CIS-RHEL10-6.1.7
+        title: Ensure permissions on /etc/gshadow are configured
+        level: 1
+      - id: CIS-RHEL10-6.1.8
+        title: Ensure permissions on /etc/gshadow- are configured
+        level: 1
+      - id: CIS-RHEL10-6.1.9
+        title: Ensure no world writable files exist
+        level: 1
+      - id: CIS-RHEL10-6.1.10
+        title: Ensure no unowned or ungrouped files or directories exist
+        level: 1
+
+      - id: CIS-RHEL10-6.2.1
+        title: Ensure accounts in /etc/passwd use shadowed passwords
+        level: 1
+      - id: CIS-RHEL10-6.2.2
+        title: Ensure /etc/shadow password fields are not empty
+        level: 1
+      - id: CIS-RHEL10-6.2.3
+        title: Ensure all groups in /etc/passwd exist in /etc/group
+        level: 1
+      - id: CIS-RHEL10-6.2.4
+        title: Ensure no duplicate UIDs exist
+        level: 1
+      - id: CIS-RHEL10-6.2.5
+        title: Ensure no duplicate GIDs exist
+        level: 1
+      - id: CIS-RHEL10-6.2.6
+        title: Ensure no duplicate user names exist
+        level: 1
+      - id: CIS-RHEL10-6.2.7
+        title: Ensure no duplicate group names exist
+        level: 1
+      - id: CIS-RHEL10-6.2.8
+        title: Ensure root path integrity (no '::', '.', or world-writable elements)
+        level: 1
+        automated: false
+      - id: CIS-RHEL10-6.2.9
+        title: Ensure root is the only UID 0 account
+        level: 1
+      - id: CIS-RHEL10-6.2.10
+        title: Ensure local interactive user home directories exist
+        level: 1
+        automated: false

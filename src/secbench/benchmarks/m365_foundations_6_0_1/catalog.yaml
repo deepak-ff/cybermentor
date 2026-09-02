@@ -1,0 +1,605 @@
+id: m365_foundations_6_0_1
+title: CIS Microsoft 365 Foundations Benchmark
+version: 6.0.1
+target: m365
+description: |
+  CIS Microsoft 365 Foundations Benchmark v6.0.1. Covers Microsoft 365 admin
+  center, Microsoft Defender, Microsoft Purview, Exchange Online,
+  SharePoint/OneDrive, Microsoft Teams, Microsoft Fabric and Microsoft Intune.
+
+sections:
+  - id: "1"
+    title: Microsoft 365 Admin Center
+    controls:
+      - id: CIS-M365-1.1.1
+        title: Ensure Administrative accounts are separate and cloud-only
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-1.1.2
+        title: Ensure two emergency access accounts have been defined
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-1.1.3
+        title: Ensure that between two and four global admins are designated
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-1.1.4
+        title: Ensure administrative accounts use cloud-only authentication and licensed accounts only with required apps
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-1.2.1
+        title: Ensure that only organizationally managed/approved public groups exist
+        level: 2
+        profile: E3 L2
+      - id: CIS-M365-1.2.2
+        title: Ensure sign-in to shared mailboxes is blocked
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-1.3.1
+        title: Ensure 'Idle session timeout' is set to '3 hours (or less)' for unmanaged devices
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-1.3.2
+        title: Ensure the 'Password expiration policy' is set to 'Set passwords to never expire'
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-1.3.3
+        title: Ensure 'External sharing' of calendars is not available
+        level: 2
+        profile: E3 L2
+      - id: CIS-M365-1.3.4
+        title: Ensure 'User owned apps and services' is restricted
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-1.3.5
+        title: Ensure internal phishing protection for Microsoft 365 Apps is on
+        level: 2
+        profile: E3 L2
+      - id: CIS-M365-1.3.6
+        title: Ensure 'User consent for applications' is disabled or restricted to verified publishers
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-1.3.7
+        title: Ensure 'Third-party storage services' in Microsoft 365 on the web are restricted
+        level: 2
+        profile: E3 L2
+      - id: CIS-M365-1.3.8
+        title: Ensure that Microsoft 365 audit log search is enabled
+        level: 1
+        profile: E3 L1
+  - id: "2"
+    title: Microsoft 365 Defender
+    controls:
+      - id: CIS-M365-2.1.1
+        title: Ensure Safe Links for Office Applications is enabled
+        level: 2
+        profile: E5 L2
+      - id: CIS-M365-2.1.2
+        title: Ensure the Common Attachment Types Filter is enabled
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-2.1.3
+        title: Ensure notifications for internal users sending malware is enabled
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-2.1.4
+        title: Ensure Safe Attachments policy is enabled
+        level: 2
+        profile: E5 L2
+      - id: CIS-M365-2.1.5
+        title: Ensure Safe Attachments for SharePoint, OneDrive, and Microsoft Teams is enabled
+        level: 2
+        profile: E5 L2
+      - id: CIS-M365-2.1.6
+        title: Ensure Exchange Online Spam Policies are set to notify administrators
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-2.1.7
+        title: Ensure that an anti-phishing policy has been created
+        level: 1
+        profile: E5 L1
+      - id: CIS-M365-2.1.8
+        title: Ensure that SPF records are published for all Exchange Domains
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-2.1.9
+        title: Ensure that DKIM is enabled for all Exchange Online Domains
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-2.1.10
+        title: Ensure DMARC Records for all Exchange Online domains are published
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-2.1.11
+        title: Ensure the spoofed domains report is reviewed weekly
+        level: 1
+        profile: E5 L1
+        automated: false
+      - id: CIS-M365-2.1.12
+        title: Ensure the 'Restricted entities' report is reviewed weekly
+        level: 1
+        profile: E3 L1
+        automated: false
+      - id: CIS-M365-2.1.13
+        title: Ensure all security threats in the 'Threat protection status' report are reviewed at least weekly
+        level: 1
+        profile: E5 L1
+        automated: false
+      - id: CIS-M365-2.1.14
+        title: Ensure the spam confidence level (SCL) is configured properly
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-2.2
+        title: Ensure 'Quarantine notifications' (formerly end-user spam notifications) are enabled
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-2.3.1
+        title: Ensure the Account Provisioning Activity report is reviewed at least weekly
+        level: 1
+        profile: E3 L1
+        automated: false
+      - id: CIS-M365-2.3.2
+        title: Ensure non-global administrator role group assignments are reviewed at least weekly
+        level: 1
+        profile: E3 L1
+        automated: false
+      - id: CIS-M365-2.4.1
+        title: Ensure Priority account protection is enabled and configured
+        level: 1
+        profile: E5 L1
+      - id: CIS-M365-2.4.2
+        title: Ensure Priority accounts have 'Strict protection' presets applied
+        level: 1
+        profile: E5 L1
+      - id: CIS-M365-2.4.3
+        title: Ensure Microsoft Defender for Cloud Apps is enabled and configured
+        level: 2
+        profile: E5 L2
+      - id: CIS-M365-2.4.4
+        title: Ensure the customer lockbox feature is enabled
+        level: 2
+        profile: E5 L2
+  - id: "3"
+    title: Microsoft Purview
+    controls:
+      - id: CIS-M365-3.1.1
+        title: Ensure Microsoft 365 audit log search is enabled
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-3.1.2
+        title: Ensure user role group changes are reviewed at least weekly
+        level: 1
+        profile: E3 L1
+        automated: false
+      - id: CIS-M365-3.2.1
+        title: Ensure DLP policies are enabled
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-3.2.2
+        title: Ensure DLP policies are enabled for Microsoft Teams
+        level: 1
+        profile: E5 L1
+      - id: CIS-M365-3.3
+        title: Ensure SharePoint Online Information Protection policies are set up and used
+        level: 2
+        profile: E5 L2
+        automated: false
+  - id: "4"
+    title: Microsoft Entra Admin Center
+    controls:
+      - id: CIS-M365-4.1.1
+        title: Ensure Security Defaults is disabled when Conditional Access is in use
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-4.1.2
+        title: Ensure 'Per-user MFA' is disabled (Conditional Access used instead)
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-4.1.3
+        title: Ensure 'Self-service password reset enabled' is set to 'All'
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-4.1.4
+        title: Ensure 'Restore multi-factor authentication on all remembered devices' is enabled
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-4.1.5
+        title: Ensure 'Number of methods required to reset' is set to 2
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-4.1.6
+        title: Ensure account lockout duration is greater than 60 seconds
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-4.1.7
+        title: Ensure custom banned passwords list is configured
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-4.1.8
+        title: Ensure password protection is enabled for on-prem Active Directory
+        level: 1
+        profile: E3 L1
+        automated: false
+      - id: CIS-M365-4.2.1
+        title: Ensure 'Enable Conditional Access policies to block legacy authentication' is enabled
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-4.2.2
+        title: Ensure 'Sign-in risk' is enabled in MFA Conditional Access policies
+        level: 1
+        profile: E5 L1
+      - id: CIS-M365-4.2.3
+        title: Ensure 'User risk' is enabled in MFA Conditional Access policies
+        level: 1
+        profile: E5 L1
+      - id: CIS-M365-4.2.4
+        title: Ensure that Microsoft Entra ID password protection is enabled
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-4.2.5
+        title: Ensure multifactor authentication is enabled for all administrative roles
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-4.2.6
+        title: Ensure multifactor authentication is enabled for all users in all roles
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-4.2.7
+        title: Ensure multifactor authentication is required to access Microsoft Admin Portals
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-4.2.8
+        title: Ensure 'Phishing-resistant MFA strength' is required for Administrators
+        level: 2
+        profile: E5 L2
+      - id: CIS-M365-4.3.1
+        title: Ensure 'Microsoft Authenticator' is configured to protect against MFA fatigue
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-4.3.2
+        title: Ensure custom roles are used to follow least privilege model
+        level: 1
+        profile: E3 L1
+        automated: false
+      - id: CIS-M365-4.3.3
+        title: Ensure 'Privileged Identity Management' is used to manage roles
+        level: 2
+        profile: E5 L2
+      - id: CIS-M365-4.3.4
+        title: Ensure 'access reviews' for Guest Users are configured
+        level: 2
+        profile: E5 L2
+      - id: CIS-M365-4.3.5
+        title: Ensure 'access reviews' for high privileged Microsoft Entra roles are configured
+        level: 2
+        profile: E5 L2
+      - id: CIS-M365-4.3.6
+        title: Ensure 'access reviews' for global administrators are configured
+        level: 2
+        profile: E5 L2
+      - id: CIS-M365-4.4.1
+        title: Ensure that 'LinkedIn contact synchronization' is disabled
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-4.4.2
+        title: Ensure 'Restrict non-admin users from creating tenants' is set to 'Yes'
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-4.4.3
+        title: Ensure 'Restrict access to Entra admin center' is set to 'Yes'
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-4.4.4
+        title: Ensure 'Users can register applications' is set to 'No'
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-4.4.5
+        title: Ensure 'User consent for applications' is set to 'Allow user consent for verified publishers'
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-4.4.6
+        title: Ensure that collaboration invitations are sent to allowed domains only
+        level: 2
+        profile: E3 L2
+      - id: CIS-M365-4.4.7
+        title: Ensure that 'Guest invite restrictions' is set appropriately
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-4.4.8
+        title: Ensure that 'Guest user access restrictions' is set to limited access
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-4.5.1
+        title: Ensure 'sign-in frequency' is enabled and browser sessions are not persistent for administrative users
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-4.5.2
+        title: Ensure 'sign-in frequency' is enabled and browser sessions are not persistent for all users
+        level: 2
+        profile: E3 L2
+      - id: CIS-M365-4.5.3
+        title: Ensure 'access reviews' for high privileged Entra roles are configured
+        level: 2
+        profile: E5 L2
+        automated: false
+      - id: CIS-M365-4.6
+        title: Ensure that all sign-in policies require Multi-Factor Authentication
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-4.7
+        title: Ensure that 'Notify users on password resets?' is set to 'Yes'
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-4.8
+        title: Ensure that 'Notify all admins when other admins reset their password?' is set to 'Yes'
+        level: 2
+        profile: E3 L2
+  - id: "5"
+    title: Exchange Admin Center
+    controls:
+      - id: CIS-M365-5.1.1
+        title: Ensure modern authentication for Exchange Online is enabled
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-5.1.2
+        title: Ensure MailTips are enabled for end users
+        level: 2
+        profile: E3 L2
+      - id: CIS-M365-5.1.3
+        title: Ensure 'External email tag' is enabled
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-5.1.4
+        title: Ensure email forwarding rules to external domains are reviewed
+        level: 1
+        profile: E3 L1
+        automated: false
+      - id: CIS-M365-5.1.5
+        title: Ensure mail transport rules do not whitelist specific external domains
+        level: 1
+        profile: E3 L1
+        automated: false
+      - id: CIS-M365-5.1.6
+        title: Ensure mailbox auditing for all users is enabled
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-5.1.7
+        title: Ensure 'AuditDisabled' is False at the organization level
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-5.1.8
+        title: Ensure additional storage providers are restricted in Outlook on the web
+        level: 2
+        profile: E3 L2
+      - id: CIS-M365-5.2.1
+        title: Ensure 'External in Outlook' is enabled
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-5.2.2
+        title: Ensure email from external senders is identified
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-5.2.3
+        title: Ensure DKIM is configured for all custom Exchange Online domains
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-5.2.4
+        title: Ensure SPF is configured for all custom Exchange Online domains
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-5.2.5
+        title: Ensure DMARC is configured for all custom Exchange Online domains
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-5.2.6
+        title: Ensure that an anti-phishing policy has been created
+        level: 1
+        profile: E5 L1
+      - id: CIS-M365-5.2.7
+        title: Ensure connection filter IP allow list is reviewed regularly
+        level: 1
+        profile: E3 L1
+        automated: false
+      - id: CIS-M365-5.2.8
+        title: Ensure inbound anti-spam policies do not contain allowed domains
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-5.3.1
+        title: Ensure mailbox auto-forwarding rules to external domains are disabled
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-5.3.2
+        title: Ensure all mailbox audit log entries are retained for at least 90 days
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-5.3.3
+        title: Ensure that resource accounts cannot be used to send email
+        level: 2
+        profile: E3 L2
+        automated: false
+      - id: CIS-M365-5.4
+        title: Ensure 'Block external messages from being sent or received with auto-forwarding rules' is enabled
+        level: 1
+        profile: E3 L1
+  - id: "6"
+    title: SharePoint and OneDrive
+    controls:
+      - id: CIS-M365-6.1.1
+        title: Ensure modern authentication for SharePoint applications is required
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-6.1.2
+        title: Ensure SharePoint and OneDrive integration with Microsoft Defender for Cloud Apps is enabled
+        level: 2
+        profile: E5 L2
+      - id: CIS-M365-6.1.3
+        title: Ensure external sharing is restricted by domain
+        level: 2
+        profile: E3 L2
+      - id: CIS-M365-6.1.4
+        title: Ensure SharePoint guest users cannot share items they don't own
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-6.1.5
+        title: Ensure expiration time for external sharing links is set
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-6.1.6
+        title: Ensure 'Anyone' link expiration is set to <= 30 days
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-6.2.1
+        title: Ensure SharePoint external sharing is set to 'New and existing guests' or stricter
+        level: 2
+        profile: E3 L2
+      - id: CIS-M365-6.2.2
+        title: Ensure 'Limit external sharing by domain' allowlist is configured
+        level: 2
+        profile: E3 L2
+        automated: false
+      - id: CIS-M365-6.2.3
+        title: Ensure that SharePoint guest users cannot reshare resources
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-6.2.4
+        title: Ensure 'Default link type' is set to 'Specific people' or 'People in your organization'
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-6.2.5
+        title: Ensure OneDrive 'Sync only on devices joined to specific domains' is enabled
+        level: 2
+        profile: E3 L2
+      - id: CIS-M365-6.2.6
+        title: Ensure SharePoint conditional access policies require compliant or hybrid joined devices
+        level: 2
+        profile: E5 L2
+      - id: CIS-M365-6.3.1
+        title: Ensure SharePoint allows custom scripts only when required
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-6.3.2
+        title: Ensure 'Files added to a recovery account' policy is configured
+        level: 1
+        profile: E3 L1
+        automated: false
+  - id: "7"
+    title: Microsoft Teams
+    controls:
+      - id: CIS-M365-7.1.1
+        title: Ensure External access for Teams is restricted
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-7.1.2
+        title: Ensure communication with unmanaged Skype/Teams users is disabled
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-7.2.1
+        title: Ensure guest access in Teams is appropriately restricted
+        level: 2
+        profile: E3 L2
+      - id: CIS-M365-7.2.2
+        title: Ensure anonymous users can't join a meeting (unless required)
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-7.2.3
+        title: Ensure 'meeting chat' allows only invitees and presenters
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-7.2.4
+        title: Ensure that anonymous users and dial-in callers can't start a meeting
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-7.2.5
+        title: Ensure that 'present' permissions are restricted to organizers and presenters
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-7.2.6
+        title: Ensure external participants can't request control during meetings
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-7.2.7
+        title: Ensure external meeting chat is off
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-7.2.8
+        title: Ensure 'who can record' policy is restricted to organizers + co-organizers
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-7.2.9
+        title: Ensure 'PowerShell access' for Teams admin role is reviewed
+        level: 1
+        profile: E3 L1
+        automated: false
+      - id: CIS-M365-7.3.1
+        title: Ensure third-party apps in Teams are restricted to allowed list
+        level: 2
+        profile: E3 L2
+      - id: CIS-M365-7.3.2
+        title: Ensure custom apps in Teams are restricted (App permission policies)
+        level: 2
+        profile: E3 L2
+      - id: CIS-M365-7.3.3
+        title: Ensure that file uploads in chat scan for malware
+        level: 2
+        profile: E5 L2
+      - id: CIS-M365-7.4
+        title: Ensure Teams admin audit logs are reviewed regularly
+        level: 1
+        profile: E3 L1
+        automated: false
+  - id: "8"
+    title: Microsoft Fabric / Power Platform
+    controls:
+      - id: CIS-M365-8.1.1
+        title: Ensure tenant-level Power Platform DLP policies are configured
+        level: 2
+        profile: E5 L2
+      - id: CIS-M365-8.1.2
+        title: Ensure that environment creation is restricted to admins
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-8.1.3
+        title: Ensure Power BI tenant settings restrict data export and sharing externally
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-8.1.4
+        title: Ensure Service Principal access to Fabric is governed by approved security groups
+        level: 2
+        profile: E5 L2
+      - id: CIS-M365-8.1.5
+        title: Ensure Fabric audit logs are enabled and forwarded
+        level: 1
+        profile: E3 L1
+  - id: "9"
+    title: Microsoft Intune (MDM)
+    controls:
+      - id: CIS-M365-9.1.1
+        title: Ensure mobile device management (MDM) is enforced via Intune for managed users
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-9.1.2
+        title: Ensure Intune compliance policies require encryption / passcode / OS version
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-9.1.3
+        title: Ensure mobile application management (MAM) policies protect corporate data
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-9.1.4
+        title: Ensure Conditional Access requires compliant or hybrid Entra-joined devices
+        level: 1
+        profile: E3 L1
+      - id: CIS-M365-9.1.5
+        title: Ensure Intune Endpoint detection & response integration with Defender for Endpoint is enabled
+        level: 2
+        profile: E5 L2
+      - id: CIS-M365-9.1.6
+        title: Ensure Windows 10/11 Update Rings deploy updates within 30 days
+        level: 1
+        profile: E3 L1
+        automated: false
+      - id: CIS-M365-9.1.7
+        title: Ensure Apple Push Notification Service (APNs) certificate is valid
+        level: 1
+        profile: E3 L1
+        automated: false

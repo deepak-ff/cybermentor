@@ -1,0 +1,178 @@
+id: defender_av_1_0_0
+title: "CIS Microsoft Defender Antivirus Benchmark"
+version: 1.0.0
+target: windows
+description: |
+  CIS Microsoft Defender Antivirus Benchmark v1.0.0. Hardens the
+  Microsoft Defender Antivirus engine on Windows 10 / 11 endpoints,
+  including real-time protection, cloud-delivered protection, network
+  protection, controlled folder access, attack-surface-reduction
+  rules, exclusions hygiene, and signature update behaviour.
+
+  Run on the local machine (when the app itself is on a Windows host)
+  or against a Windows host reachable via OpenSSH. Many checks must be
+  executed in an elevated PowerShell session and use `Get-MpPreference`
+  / `Get-MpComputerStatus`.
+
+sections:
+  - id: "1"
+    title: "Real-time Protection"
+    controls:
+      - id: CIS-DEFAV-1.1
+        title: "Ensure Microsoft Defender Antivirus is enabled (AntivirusEnabled)"
+        level: 1
+      - id: CIS-DEFAV-1.2
+        title: "Ensure real-time protection is enabled (DisableRealtimeMonitoring=False)"
+        level: 1
+      - id: CIS-DEFAV-1.3
+        title: "Ensure behavior monitoring is enabled (DisableBehaviorMonitoring=False)"
+        level: 1
+      - id: CIS-DEFAV-1.4
+        title: "Ensure on-access protection is enabled (DisableOnAccessProtection=False)"
+        level: 1
+      - id: CIS-DEFAV-1.5
+        title: "Ensure script scanning is enabled (DisableScriptScanning=False)"
+        level: 1
+      - id: CIS-DEFAV-1.6
+        title: "Ensure IOAV protection is enabled (DisableIOAVProtection=False)"
+        level: 1
+      - id: CIS-DEFAV-1.7
+        title: "Ensure removable drive scanning is enabled (DisableRemovableDriveScanning=False)"
+        level: 1
+      - id: CIS-DEFAV-1.8
+        title: "Ensure email scanning is enabled (DisableEmailScanning=False)"
+        level: 2
+      - id: CIS-DEFAV-1.9
+        title: "Ensure archive scanning is enabled (DisableArchiveScanning=False)"
+        level: 1
+
+  - id: "2"
+    title: "Cloud-Delivered Protection"
+    controls:
+      - id: CIS-DEFAV-2.1
+        title: "Ensure cloud-delivered protection (MAPS) is set to Advanced (MAPSReporting=2)"
+        level: 1
+      - id: CIS-DEFAV-2.2
+        title: "Ensure cloud-block level is High or higher (CloudBlockLevel >= 2)"
+        level: 1
+      - id: CIS-DEFAV-2.3
+        title: "Ensure cloud-extended timeout is configured (CloudExtendedTimeout >= 50)"
+        level: 1
+      - id: CIS-DEFAV-2.4
+        title: "Ensure SubmitSamplesConsent is set to Send safe samples (=1) or Send all samples (=3)"
+        level: 1
+      - id: CIS-DEFAV-2.5
+        title: "Ensure block-at-first-sight is enabled (DisableBlockAtFirstSeen=False)"
+        level: 1
+
+  - id: "3"
+    title: "Network Protection and PUA"
+    controls:
+      - id: CIS-DEFAV-3.1
+        title: "Ensure network protection is enabled (EnableNetworkProtection=1)"
+        level: 1
+      - id: CIS-DEFAV-3.2
+        title: "Ensure potentially unwanted application (PUA) protection is enabled (PUAProtection=1)"
+        level: 1
+      - id: CIS-DEFAV-3.3
+        title: "Ensure intrusion prevention system (IPS) signatures are enabled (DisableIntrusionPreventionSystem=False)"
+        level: 1
+
+  - id: "4"
+    title: "Tamper Protection"
+    controls:
+      - id: CIS-DEFAV-4.1
+        title: "Ensure Tamper Protection is enabled (IsTamperProtected=True)"
+        level: 1
+      - id: CIS-DEFAV-4.2
+        title: "Ensure local admins cannot disable real-time protection (DisableLocalAdminMerge=True)"
+        level: 1
+      - id: CIS-DEFAV-4.3
+        title: "Ensure Defender service is running (AMServiceEnabled=True)"
+        level: 1
+
+  - id: "5"
+    title: "Attack Surface Reduction"
+    controls:
+      - id: CIS-DEFAV-5.1
+        title: "Ensure ASR rules are enforced (BE9BA2D9-53EA-4CDC-84E5-9B1EEEE46550 - block executable content from email/webmail)"
+        level: 1
+        automated: false
+      - id: CIS-DEFAV-5.2
+        title: "Ensure ASR rule blocks Office apps creating child processes"
+        level: 1
+        automated: false
+      - id: CIS-DEFAV-5.3
+        title: "Ensure ASR rule blocks credential stealing from LSASS"
+        level: 1
+        automated: false
+      - id: CIS-DEFAV-5.4
+        title: "Ensure ASR rule blocks JavaScript / VBScript launching downloaded executable content"
+        level: 1
+        automated: false
+      - id: CIS-DEFAV-5.5
+        title: "Ensure ASR rule blocks Office macros from creating child processes"
+        level: 1
+        automated: false
+      - id: CIS-DEFAV-5.6
+        title: "Ensure ASR rule blocks abuse of exploited vulnerable signed drivers"
+        level: 1
+        automated: false
+      - id: CIS-DEFAV-5.7
+        title: "Ensure ASR rule blocks executable files unless prevalent / age / trusted"
+        level: 2
+        automated: false
+
+  - id: "6"
+    title: "Controlled Folder Access and Exploit Protection"
+    controls:
+      - id: CIS-DEFAV-6.1
+        title: "Ensure Controlled Folder Access is enabled (EnableControlledFolderAccess=1)"
+        level: 2
+      - id: CIS-DEFAV-6.2
+        title: "Ensure Controlled Folder Access protected folders are configured"
+        level: 2
+        automated: false
+      - id: CIS-DEFAV-6.3
+        title: "Ensure Exploit Protection settings are configured per organisation policy"
+        level: 2
+        automated: false
+
+  - id: "7"
+    title: "Scanning and Updates"
+    controls:
+      - id: CIS-DEFAV-7.1
+        title: "Ensure scheduled quick scans are configured (ScanScheduleQuickScanTime configured)"
+        level: 1
+        automated: false
+      - id: CIS-DEFAV-7.2
+        title: "Ensure scheduled full scans are configured (ScanScheduleDay configured)"
+        level: 1
+        automated: false
+      - id: CIS-DEFAV-7.3
+        title: "Ensure signature update interval is configured (SignatureUpdateInterval > 0)"
+        level: 1
+      - id: CIS-DEFAV-7.4
+        title: "Ensure signatures are up-to-date (AntivirusSignatureAge < 1 day)"
+        level: 1
+      - id: CIS-DEFAV-7.5
+        title: "Ensure CPU usage during scan is limited (ScanAvgCPULoadFactor <= 50)"
+        level: 2
+      - id: CIS-DEFAV-7.6
+        title: "Ensure scans are catched-up after missed schedule (DisableCatchupQuickScan=False)"
+        level: 2
+
+  - id: "8"
+    title: "Hygiene and Logging"
+    controls:
+      - id: CIS-DEFAV-8.1
+        title: "Ensure Defender exclusions are reviewed for least-privilege"
+        level: 1
+        automated: false
+      - id: CIS-DEFAV-8.2
+        title: "Ensure UI access is configured per policy (UILockdown / no end-user disable)"
+        level: 1
+        automated: false
+      - id: CIS-DEFAV-8.3
+        title: "Ensure quarantine purge interval is configured (QuarantinePurgeItemsAfterDelay)"
+        level: 2

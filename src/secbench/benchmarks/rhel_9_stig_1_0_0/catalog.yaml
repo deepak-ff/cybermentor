@@ -1,0 +1,442 @@
+id: rhel_9_stig_1_0_0
+title: CIS Red Hat Enterprise Linux 9 STIG Benchmark
+version: 1.0.0
+target: rhel
+beta: true
+description: |
+  CIS Red Hat Enterprise Linux 9 STIG Benchmark v1.0.0. Maps the
+  Defense Information Systems Agency (DISA) STIG hardening guidance
+  for RHEL 9 onto the CIS structure.
+
+  In addition to the standard hardening controls (filesystems,
+  banners, services, network, auditing, SSH, sudo, PAM, file
+  permissions), this benchmark enforces STIG-specific items such as
+  FIPS-compliant crypto policies, DoD warning banners, and stricter
+  password / lockout settings.
+
+  Run on the local machine (when the app itself is on a Linux host) or
+  on a remote RHEL host reached over SSH from the Connect >
+  Infrastructure tab. Many checks require sudo on the target.
+
+sections:
+  - id: "1"
+    title: Initial Setup
+    controls:
+      - id: CIS-RHEL9-STIG-1.1.1.1
+        title: STIG - Disable cramfs kernel module
+        level: 1
+      - id: CIS-RHEL9-STIG-1.1.1.2
+        title: STIG - Disable freevxfs kernel module
+        level: 1
+      - id: CIS-RHEL9-STIG-1.1.1.3
+        title: STIG - Disable hfs kernel module
+        level: 1
+      - id: CIS-RHEL9-STIG-1.1.1.4
+        title: STIG - Disable hfsplus kernel module
+        level: 1
+      - id: CIS-RHEL9-STIG-1.1.1.5
+        title: STIG - Disable jffs2 kernel module
+        level: 1
+      - id: CIS-RHEL9-STIG-1.1.1.6
+        title: STIG - Disable squashfs kernel module
+        level: 2
+      - id: CIS-RHEL9-STIG-1.1.1.7
+        title: STIG - Disable udf kernel module
+        level: 1
+      - id: CIS-RHEL9-STIG-1.1.1.8
+        title: STIG - Disable usb-storage kernel module (V-258090)
+        level: 1
+
+      - id: CIS-RHEL9-STIG-1.1.2.1
+        title: STIG - Ensure /tmp is a separate partition with nodev,nosuid,noexec
+        level: 1
+      - id: CIS-RHEL9-STIG-1.1.2.2
+        title: STIG - Ensure /var/log/audit is a separate partition with nodev,nosuid,noexec
+        level: 1
+      - id: CIS-RHEL9-STIG-1.1.2.3
+        title: STIG - Ensure nodev option set on /home partition
+        level: 1
+      - id: CIS-RHEL9-STIG-1.1.2.4
+        title: STIG - Ensure nodev,nosuid,noexec on /var/tmp
+        level: 1
+
+      - id: CIS-RHEL9-STIG-1.2.1
+        title: STIG - Ensure gpgcheck is globally activated
+        level: 1
+      - id: CIS-RHEL9-STIG-1.2.2
+        title: STIG - Ensure repo_gpgcheck is globally activated
+        level: 1
+      - id: CIS-RHEL9-STIG-1.2.3
+        title: STIG - Ensure security patches are installed (V-257795)
+        level: 1
+
+      - id: CIS-RHEL9-STIG-1.3.1
+        title: STIG - Ensure the operating system enforces a delay of at least 4 seconds between login attempts
+        level: 1
+        automated: false
+      - id: CIS-RHEL9-STIG-1.3.2
+        title: STIG - Ensure boot loader password is set (V-257791)
+        level: 1
+      - id: CIS-RHEL9-STIG-1.3.3
+        title: STIG - Ensure permissions on bootloader config are configured
+        level: 1
+
+      - id: CIS-RHEL9-STIG-1.4.1
+        title: STIG - Ensure address space layout randomisation (ASLR) is enabled
+        level: 1
+      - id: CIS-RHEL9-STIG-1.4.2
+        title: STIG - Ensure ptrace_scope is restricted
+        level: 1
+      - id: CIS-RHEL9-STIG-1.4.3
+        title: STIG - Ensure core dumps are disabled
+        level: 1
+      - id: CIS-RHEL9-STIG-1.4.4
+        title: STIG - Ensure prelink is removed
+        level: 1
+      - id: CIS-RHEL9-STIG-1.4.5
+        title: STIG - Ensure abrt is removed (V-257818)
+        level: 1
+
+      # SELinux - STIG mandates Enforcing + targeted
+      - id: CIS-RHEL9-STIG-1.5.1
+        title: STIG - Ensure SELinux is installed
+        level: 1
+      - id: CIS-RHEL9-STIG-1.5.2
+        title: STIG - Ensure SELinux is not disabled in bootloader
+        level: 1
+      - id: CIS-RHEL9-STIG-1.5.3
+        title: STIG - Ensure SELinux policy is targeted (V-257840)
+        level: 1
+      - id: CIS-RHEL9-STIG-1.5.4
+        title: STIG - Ensure SELinux mode is Enforcing (V-257836)
+        level: 1
+      - id: CIS-RHEL9-STIG-1.5.5
+        title: STIG - Ensure setroubleshoot is not installed
+        level: 1
+      - id: CIS-RHEL9-STIG-1.5.6
+        title: STIG - Ensure mcstrans is not installed
+        level: 1
+
+      # FIPS / crypto policy
+      - id: CIS-RHEL9-STIG-1.6.1
+        title: STIG - Ensure system-wide crypto policy is FIPS (V-257779)
+        level: 1
+      - id: CIS-RHEL9-STIG-1.6.2
+        title: STIG - Ensure system-wide crypto policy disables sha1
+        level: 1
+
+      # Banners must contain the DoD notice
+      - id: CIS-RHEL9-STIG-1.7.1
+        title: STIG - Ensure /etc/motd contains the DoD warning banner (V-257777)
+        level: 1
+        automated: false
+      - id: CIS-RHEL9-STIG-1.7.2
+        title: STIG - Ensure /etc/issue contains the DoD warning banner
+        level: 1
+      - id: CIS-RHEL9-STIG-1.7.3
+        title: STIG - Ensure /etc/issue.net contains the DoD warning banner
+        level: 1
+      - id: CIS-RHEL9-STIG-1.7.4
+        title: STIG - Ensure permissions on /etc/motd are configured
+        level: 1
+      - id: CIS-RHEL9-STIG-1.7.5
+        title: STIG - Ensure permissions on /etc/issue are configured
+        level: 1
+      - id: CIS-RHEL9-STIG-1.7.6
+        title: STIG - Ensure permissions on /etc/issue.net are configured
+        level: 1
+
+      - id: CIS-RHEL9-STIG-1.8.1
+        title: STIG - Ensure GNOME Display Manager is not installed (or banner is set)
+        level: 2
+
+  - id: "2"
+    title: Services
+    controls:
+      - id: CIS-RHEL9-STIG-2.1.1
+        title: STIG - Ensure chrony is installed and running (V-257953)
+        level: 1
+      - id: CIS-RHEL9-STIG-2.2.1
+        title: STIG - Ensure xinetd is not installed
+        level: 1
+      - id: CIS-RHEL9-STIG-2.2.2
+        title: STIG - Ensure X Window System is not installed
+        level: 1
+      - id: CIS-RHEL9-STIG-2.2.3
+        title: STIG - Ensure Avahi Server is not installed
+        level: 1
+      - id: CIS-RHEL9-STIG-2.2.4
+        title: STIG - Ensure CUPS is not installed (where not required)
+        level: 1
+      - id: CIS-RHEL9-STIG-2.2.5
+        title: STIG - Ensure DHCP Server is not installed
+        level: 1
+      - id: CIS-RHEL9-STIG-2.2.6
+        title: STIG - Ensure DNS Server is not installed
+        level: 1
+      - id: CIS-RHEL9-STIG-2.2.7
+        title: STIG - Ensure FTP Server (vsftpd) is not installed
+        level: 1
+      - id: CIS-RHEL9-STIG-2.2.8
+        title: STIG - Ensure TFTP Server is not installed
+        level: 1
+      - id: CIS-RHEL9-STIG-2.2.9
+        title: STIG - Ensure web server is not installed
+        level: 1
+      - id: CIS-RHEL9-STIG-2.2.10
+        title: STIG - Ensure IMAP/POP3 server is not installed
+        level: 1
+      - id: CIS-RHEL9-STIG-2.2.11
+        title: STIG - Ensure Samba is not installed
+        level: 1
+      - id: CIS-RHEL9-STIG-2.2.12
+        title: STIG - Ensure web proxy is not installed
+        level: 1
+      - id: CIS-RHEL9-STIG-2.2.13
+        title: STIG - Ensure SNMP server is not installed
+        level: 1
+      - id: CIS-RHEL9-STIG-2.2.14
+        title: STIG - Ensure NIS server is not installed
+        level: 1
+      - id: CIS-RHEL9-STIG-2.2.15
+        title: STIG - Ensure telnet server is not installed
+        level: 1
+
+      - id: CIS-RHEL9-STIG-2.3.1
+        title: STIG - Ensure rsh client is not installed
+        level: 1
+      - id: CIS-RHEL9-STIG-2.3.2
+        title: STIG - Ensure talk client is not installed
+        level: 1
+      - id: CIS-RHEL9-STIG-2.3.3
+        title: STIG - Ensure telnet client is not installed
+        level: 1
+      - id: CIS-RHEL9-STIG-2.3.4
+        title: STIG - Ensure tftp client is not installed
+        level: 1
+
+      - id: CIS-RHEL9-STIG-2.4.1
+        title: STIG - Ensure cron daemon is enabled and running
+        level: 1
+      - id: CIS-RHEL9-STIG-2.4.2
+        title: STIG - Ensure permissions on /etc/crontab are configured
+        level: 1
+      - id: CIS-RHEL9-STIG-2.4.3
+        title: STIG - Ensure permissions on /etc/cron.d are configured
+        level: 1
+
+  - id: "3"
+    title: Network Configuration
+    controls:
+      - id: CIS-RHEL9-STIG-3.1.1
+        title: STIG - Ensure wireless interfaces are disabled (V-257936)
+        level: 1
+      - id: CIS-RHEL9-STIG-3.1.2
+        title: STIG - Ensure bluetooth is disabled
+        level: 1
+      - id: CIS-RHEL9-STIG-3.2.1
+        title: STIG - Ensure dccp kernel module is not available
+        level: 1
+      - id: CIS-RHEL9-STIG-3.2.2
+        title: STIG - Ensure tipc kernel module is not available
+        level: 1
+      - id: CIS-RHEL9-STIG-3.2.3
+        title: STIG - Ensure rds kernel module is not available
+        level: 1
+      - id: CIS-RHEL9-STIG-3.2.4
+        title: STIG - Ensure sctp kernel module is not available
+        level: 1
+      - id: CIS-RHEL9-STIG-3.3.1
+        title: STIG - Ensure ip forwarding is disabled
+        level: 1
+      - id: CIS-RHEL9-STIG-3.3.2
+        title: STIG - Ensure send_redirects is disabled
+        level: 1
+      - id: CIS-RHEL9-STIG-3.3.3
+        title: STIG - Ensure bogus icmp responses are ignored
+        level: 1
+      - id: CIS-RHEL9-STIG-3.3.4
+        title: STIG - Ensure broadcast icmp requests are ignored
+        level: 1
+      - id: CIS-RHEL9-STIG-3.3.5
+        title: STIG - Ensure icmp redirects are not accepted
+        level: 1
+      - id: CIS-RHEL9-STIG-3.3.6
+        title: STIG - Ensure secure icmp redirects are not accepted
+        level: 1
+      - id: CIS-RHEL9-STIG-3.3.7
+        title: STIG - Ensure rp_filter is enabled
+        level: 1
+      - id: CIS-RHEL9-STIG-3.3.8
+        title: STIG - Ensure source routed packets are not accepted
+        level: 1
+      - id: CIS-RHEL9-STIG-3.3.9
+        title: STIG - Ensure suspicious packets are logged (log_martians)
+        level: 1
+      - id: CIS-RHEL9-STIG-3.3.10
+        title: STIG - Ensure tcp_syncookies is enabled
+        level: 1
+      - id: CIS-RHEL9-STIG-3.3.11
+        title: STIG - Ensure ipv6 router advertisements are not accepted
+        level: 1
+      - id: CIS-RHEL9-STIG-3.4.1
+        title: STIG - Ensure firewalld is installed and running (V-257936)
+        level: 1
+      - id: CIS-RHEL9-STIG-3.4.2
+        title: STIG - Ensure iptables-services is not installed
+        level: 1
+
+  - id: "4"
+    title: Logging and Auditing
+    controls:
+      - id: CIS-RHEL9-STIG-4.1.1
+        title: STIG - Ensure auditd is installed and running (V-258131)
+        level: 1
+      - id: CIS-RHEL9-STIG-4.1.2
+        title: STIG - Ensure auditing for processes that start prior to auditd is enabled (audit=1)
+        level: 1
+      - id: CIS-RHEL9-STIG-4.1.3
+        title: STIG - Ensure audit_backlog_limit is sufficient (>= 8192)
+        level: 1
+      - id: CIS-RHEL9-STIG-4.2.1
+        title: STIG - Ensure rsyslog is installed
+        level: 1
+      - id: CIS-RHEL9-STIG-4.2.2
+        title: STIG - Ensure rsyslog service is enabled
+        level: 1
+      - id: CIS-RHEL9-STIG-4.2.3
+        title: STIG - Ensure systemd-journal-remote is installed for log forwarding
+        level: 1
+
+  - id: "5"
+    title: Access, Authentication and Authorization
+    controls:
+      - id: CIS-RHEL9-STIG-5.1.1
+        title: STIG - Ensure permissions on /etc/ssh/sshd_config are configured
+        level: 1
+      - id: CIS-RHEL9-STIG-5.1.2
+        title: STIG - Ensure SSH LogLevel is VERBOSE (V-257984)
+        level: 1
+      - id: CIS-RHEL9-STIG-5.1.3
+        title: STIG - Ensure SSH PAM is enabled (V-257987)
+        level: 1
+      - id: CIS-RHEL9-STIG-5.1.4
+        title: STIG - Ensure SSH root login is disabled (V-257984)
+        level: 1
+      - id: CIS-RHEL9-STIG-5.1.5
+        title: STIG - Ensure SSH HostbasedAuthentication is disabled
+        level: 1
+      - id: CIS-RHEL9-STIG-5.1.6
+        title: STIG - Ensure SSH PermitEmptyPasswords is disabled
+        level: 1
+      - id: CIS-RHEL9-STIG-5.1.7
+        title: STIG - Ensure SSH PermitUserEnvironment is disabled
+        level: 1
+      - id: CIS-RHEL9-STIG-5.1.8
+        title: STIG - Ensure SSH IgnoreRhosts is enabled
+        level: 1
+      - id: CIS-RHEL9-STIG-5.1.9
+        title: STIG - Ensure SSH X11 forwarding is disabled (V-257990)
+        level: 1
+      - id: CIS-RHEL9-STIG-5.1.10
+        title: STIG - Ensure SSH warning banner points to /etc/issue.net
+        level: 1
+      - id: CIS-RHEL9-STIG-5.1.11
+        title: STIG - Ensure SSH MaxAuthTries is 4 or less
+        level: 1
+      - id: CIS-RHEL9-STIG-5.1.12
+        title: STIG - Ensure SSH MaxSessions is 10 or less
+        level: 1
+      - id: CIS-RHEL9-STIG-5.1.13
+        title: STIG - Ensure SSH LoginGraceTime is 60s or less
+        level: 1
+      - id: CIS-RHEL9-STIG-5.1.14
+        title: STIG - Ensure SSH ClientAliveInterval and ClientAliveCountMax are set
+        level: 1
+        automated: false
+
+      - id: CIS-RHEL9-STIG-5.2.1
+        title: STIG - Ensure sudo is installed
+        level: 1
+      - id: CIS-RHEL9-STIG-5.2.2
+        title: STIG - Ensure sudo commands use pty
+        level: 1
+      - id: CIS-RHEL9-STIG-5.2.3
+        title: STIG - Ensure sudo log file exists
+        level: 1
+      - id: CIS-RHEL9-STIG-5.2.4
+        title: STIG - Ensure no NOPASSWD directives exist
+        level: 1
+      - id: CIS-RHEL9-STIG-5.2.5
+        title: STIG - Ensure no '!authenticate' is configured
+        level: 1
+      - id: CIS-RHEL9-STIG-5.2.6
+        title: STIG - Ensure sudo timestamp_timeout is configured (0..15)
+        level: 1
+      - id: CIS-RHEL9-STIG-5.2.7
+        title: STIG - Ensure access to the su command is restricted
+        level: 1
+
+      - id: CIS-RHEL9-STIG-5.3.1
+        title: STIG - Ensure password creation requirements are configured (V-257999)
+        level: 1
+      - id: CIS-RHEL9-STIG-5.3.2
+        title: STIG - Ensure lockout for failed password attempts is configured (V-258020)
+        level: 1
+      - id: CIS-RHEL9-STIG-5.3.3
+        title: STIG - Ensure password reuse is limited (>=5)
+        level: 1
+      - id: CIS-RHEL9-STIG-5.3.4
+        title: STIG - Ensure password hashing algorithm is SHA-512 or yescrypt
+        level: 1
+
+      - id: CIS-RHEL9-STIG-5.4.1
+        title: STIG - Ensure password expiration is 60 days or less (V-258063)
+        level: 1
+      - id: CIS-RHEL9-STIG-5.4.2
+        title: STIG - Ensure minimum days between password changes is 1 or more
+        level: 1
+      - id: CIS-RHEL9-STIG-5.4.3
+        title: STIG - Ensure password expiration warning days is 7 or more
+        level: 1
+      - id: CIS-RHEL9-STIG-5.4.4
+        title: STIG - Ensure default user umask is 077 or more restrictive (V-258075)
+        level: 1
+
+  - id: "6"
+    title: System Maintenance
+    controls:
+      - id: CIS-RHEL9-STIG-6.1.1
+        title: STIG - Ensure permissions on /etc/passwd are configured
+        level: 1
+      - id: CIS-RHEL9-STIG-6.1.2
+        title: STIG - Ensure permissions on /etc/group are configured
+        level: 1
+      - id: CIS-RHEL9-STIG-6.1.3
+        title: STIG - Ensure permissions on /etc/shadow are configured
+        level: 1
+      - id: CIS-RHEL9-STIG-6.1.4
+        title: STIG - Ensure permissions on /etc/gshadow are configured
+        level: 1
+      - id: CIS-RHEL9-STIG-6.1.5
+        title: STIG - Ensure no world writable files exist
+        level: 1
+      - id: CIS-RHEL9-STIG-6.1.6
+        title: STIG - Ensure no unowned or ungrouped files exist
+        level: 1
+
+      - id: CIS-RHEL9-STIG-6.2.1
+        title: STIG - Ensure accounts in /etc/passwd use shadowed passwords
+        level: 1
+      - id: CIS-RHEL9-STIG-6.2.2
+        title: STIG - Ensure /etc/shadow password fields are not empty
+        level: 1
+      - id: CIS-RHEL9-STIG-6.2.3
+        title: STIG - Ensure no duplicate UIDs exist
+        level: 1
+      - id: CIS-RHEL9-STIG-6.2.4
+        title: STIG - Ensure no duplicate GIDs exist
+        level: 1
+      - id: CIS-RHEL9-STIG-6.2.5
+        title: STIG - Ensure root is the only UID 0 account
+        level: 1

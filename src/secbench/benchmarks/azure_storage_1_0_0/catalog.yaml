@@ -1,0 +1,150 @@
+id: azure_storage_1_0_0
+title: CIS Microsoft Azure Storage Services Benchmark
+version: 1.0.0
+target: azure
+description: |
+  CIS Microsoft Azure Storage Services Benchmark v1.0.0. Covers Azure Storage
+  account-level controls plus Blob, File, Queue and Table services.
+
+sections:
+  - id: "1"
+    title: Storage Account
+    controls:
+      - id: CIS-AZ-STG-1.1
+        title: Ensure 'Secure transfer required' is set to 'Enabled' for storage accounts
+        level: 1
+      - id: CIS-AZ-STG-1.2
+        title: Ensure storage account 'Minimum TLS version' is 'Version 1.2'
+        level: 1
+      - id: CIS-AZ-STG-1.3
+        title: Ensure storage account 'Public network access' is restricted (Disabled or Selected networks)
+        level: 1
+      - id: CIS-AZ-STG-1.4
+        title: Ensure default network access rule for storage accounts is set to 'Deny'
+        level: 1
+      - id: CIS-AZ-STG-1.5
+        title: Ensure 'Allow Azure services on the trusted services list to access this storage account' is enabled when network rules deny by default
+        level: 2
+      - id: CIS-AZ-STG-1.6
+        title: Ensure 'Allow Blob Anonymous Access' is set to 'Disabled' on storage accounts
+        level: 1
+      - id: CIS-AZ-STG-1.7
+        title: Ensure storage account 'Cross Tenant Replication' is not enabled
+        level: 2
+      - id: CIS-AZ-STG-1.8
+        title: Ensure 'Storage account key access' (shared key) is disabled where possible
+        level: 1
+      - id: CIS-AZ-STG-1.9
+        title: Ensure storage account 'Default to Microsoft Entra authorization' is enabled
+        level: 1
+      - id: CIS-AZ-STG-1.10
+        title: Ensure storage account access keys are periodically regenerated
+        level: 2
+        automated: false
+      - id: CIS-AZ-STG-1.11
+        title: Ensure 'Enable key rotation reminders' is enabled for each storage account
+        level: 2
+      - id: CIS-AZ-STG-1.12
+        title: Ensure that storage accounts are encrypted with customer-managed keys (CMK) for sensitive data
+        level: 2
+      - id: CIS-AZ-STG-1.13
+        title: Ensure 'Infrastructure encryption' is enabled on storage accounts holding critical data
+        level: 2
+      - id: CIS-AZ-STG-1.14
+        title: Ensure storage accounts use private endpoints
+        level: 1
+      - id: CIS-AZ-STG-1.15
+        title: Ensure storage account diagnostic settings are configured for the 'StorageRead', 'StorageWrite', 'StorageDelete' categories
+        level: 2
+      - id: CIS-AZ-STG-1.16
+        title: Ensure storage account 'Allowed Copy scope' is restricted to AAD or PrivateLink
+        level: 2
+      - id: CIS-AZ-STG-1.17
+        title: Ensure storage account 'Hierarchical namespace' (ADLS Gen2) is enabled with appropriate ACLs
+        level: 2
+        automated: false
+      - id: CIS-AZ-STG-1.18
+        title: Ensure storage account immutable storage policies are enabled where required
+        level: 2
+        automated: false
+  - id: "2"
+    title: Blob Service
+    controls:
+      - id: CIS-AZ-STG-2.1
+        title: Ensure Soft Delete is enabled for Blobs
+        level: 1
+      - id: CIS-AZ-STG-2.2
+        title: Ensure Soft Delete is enabled for Containers
+        level: 1
+      - id: CIS-AZ-STG-2.3
+        title: Ensure Versioning is enabled for blob storage when needed
+        level: 2
+      - id: CIS-AZ-STG-2.4
+        title: Ensure Change Feed is enabled where downstream auditing requires it
+        level: 2
+        automated: false
+      - id: CIS-AZ-STG-2.5
+        title: Ensure point-in-time restore is configured for critical containers
+        level: 2
+      - id: CIS-AZ-STG-2.6
+        title: Ensure container public access level is 'Private (no anonymous access)'
+        level: 1
+      - id: CIS-AZ-STG-2.7
+        title: Ensure storage logging is enabled for blob service for read/write/delete requests
+        level: 2
+      - id: CIS-AZ-STG-2.8
+        title: Ensure SAS token expiration policy is configured (max 1 hour where feasible)
+        level: 1
+        automated: false
+      - id: CIS-AZ-STG-2.9
+        title: Ensure 'Allow Storage Account Key authorization' is disabled for blob containers using AAD
+        level: 1
+      - id: CIS-AZ-STG-2.10
+        title: Ensure customer-provided lifecycle management policies remove orphaned blobs
+        level: 2
+        automated: false
+  - id: "3"
+    title: File Service
+    controls:
+      - id: CIS-AZ-STG-3.1
+        title: Ensure SMB Multichannel is enabled only when supported network requirements are met
+        level: 2
+        automated: false
+      - id: CIS-AZ-STG-3.2
+        title: Ensure SMB protocol minimum version is SMB 3.0 or higher
+        level: 1
+      - id: CIS-AZ-STG-3.3
+        title: Ensure SMB authentication uses Kerberos / Microsoft Entra Domain Services
+        level: 1
+      - id: CIS-AZ-STG-3.4
+        title: Ensure file share soft delete is enabled
+        level: 1
+      - id: CIS-AZ-STG-3.5
+        title: Ensure NFSv3 file shares are restricted by network rules to authorized clients
+        level: 1
+      - id: CIS-AZ-STG-3.6
+        title: Ensure storage logging is enabled for file service for read/write/delete requests
+        level: 2
+      - id: CIS-AZ-STG-3.7
+        title: Ensure file share root squash is enabled when using NFSv3
+        level: 2
+  - id: "4"
+    title: Queue and Table Services
+    controls:
+      - id: CIS-AZ-STG-4.1
+        title: Ensure storage logging is enabled for queue service for read/write/delete requests
+        level: 2
+      - id: CIS-AZ-STG-4.2
+        title: Ensure storage logging is enabled for table service for read/write/delete requests
+        level: 2
+      - id: CIS-AZ-STG-4.3
+        title: Ensure queue and table SAS tokens are scoped narrowly and expire quickly
+        level: 1
+        automated: false
+      - id: CIS-AZ-STG-4.4
+        title: Ensure encryption scope is configured per-container/queue/table when handling regulated data
+        level: 2
+        automated: false
+      - id: CIS-AZ-STG-4.5
+        title: Ensure that queue and table services do not allow anonymous access (always private)
+        level: 1

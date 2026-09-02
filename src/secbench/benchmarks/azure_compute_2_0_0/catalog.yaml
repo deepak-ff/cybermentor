@@ -1,0 +1,252 @@
+id: azure_compute_2_0_0
+title: CIS Microsoft Azure Compute Services Benchmark
+version: 2.0.0
+target: azure
+description: |
+  CIS Microsoft Azure Compute Services Benchmark v2.0.0. Covers Virtual Machines,
+  Azure Kubernetes Service (AKS), Azure Container Registry, Container Instances and
+  Azure Functions security configuration.
+
+sections:
+  - id: "1"
+    title: Virtual Machines
+    controls:
+      - id: CIS-AZ-CMP-1.1
+        title: Ensure an Azure Bastion Host Exists for VM access
+        level: 2
+      - id: CIS-AZ-CMP-1.2
+        title: Ensure Just-in-Time (JIT) network access is enabled for VMs
+        level: 2
+      - id: CIS-AZ-CMP-1.3
+        title: Ensure VMs are utilizing managed disks instead of unmanaged VHDs
+        level: 1
+      - id: CIS-AZ-CMP-1.4
+        title: Ensure that OS disks are encrypted with Customer Managed Key (CMK)
+        level: 2
+      - id: CIS-AZ-CMP-1.5
+        title: Ensure that data disks are encrypted with Customer Managed Key (CMK)
+        level: 2
+      - id: CIS-AZ-CMP-1.6
+        title: Ensure 'Unattached disks' are encrypted with Customer Managed Key (CMK)
+        level: 2
+      - id: CIS-AZ-CMP-1.7
+        title: Ensure only approved VM extensions are installed
+        level: 1
+        automated: false
+      - id: CIS-AZ-CMP-1.8
+        title: Ensure that the latest OS patches for all Virtual Machines are applied
+        level: 1
+      - id: CIS-AZ-CMP-1.9
+        title: Ensure that Endpoint protection (anti-malware) is installed on VMs
+        level: 2
+      - id: CIS-AZ-CMP-1.10
+        title: Ensure VMs use Trusted Launch (Secure Boot + vTPM)
+        level: 2
+      - id: CIS-AZ-CMP-1.11
+        title: Ensure boot diagnostics is enabled with managed storage
+        level: 2
+      - id: CIS-AZ-CMP-1.12
+        title: Ensure that automatic OS image patching is enabled (when supported)
+        level: 1
+      - id: CIS-AZ-CMP-1.13
+        title: Ensure that 'Automatic guest VM patching' is enabled
+        level: 1
+      - id: CIS-AZ-CMP-1.14
+        title: Ensure VMs do not have public IP addresses unless required
+        level: 1
+      - id: CIS-AZ-CMP-1.15
+        title: Ensure SSH and RDP ports are not open to 0.0.0.0/0 from the internet
+        level: 1
+      - id: CIS-AZ-CMP-1.16
+        title: Ensure VM availability set / zone configuration aligns with workload SLAs
+        level: 2
+        automated: false
+      - id: CIS-AZ-CMP-1.17
+        title: Ensure that VM disks have backup configured (Recovery Services Vault)
+        level: 2
+      - id: CIS-AZ-CMP-1.18
+        title: Ensure system-assigned managed identity is preferred over service principals on VMs
+        level: 2
+      - id: CIS-AZ-CMP-1.19
+        title: Ensure VM Scale Sets enforce upgrade policy 'Automatic' or 'Rolling'
+        level: 2
+      - id: CIS-AZ-CMP-1.20
+        title: Ensure that VM serial console access is restricted to break-glass scenarios
+        level: 2
+        automated: false
+  - id: "2"
+    title: Azure Kubernetes Service (AKS)
+    controls:
+      - id: CIS-AZ-CMP-2.1
+        title: Ensure AKS RBAC is enabled
+        level: 1
+      - id: CIS-AZ-CMP-2.2
+        title: Ensure AKS uses Microsoft Entra integration for authentication
+        level: 1
+      - id: CIS-AZ-CMP-2.3
+        title: Ensure 'Local accounts' are disabled on AKS clusters
+        level: 1
+      - id: CIS-AZ-CMP-2.4
+        title: Ensure that the AKS API server is restricted to authorized IP ranges or private clusters
+        level: 1
+      - id: CIS-AZ-CMP-2.5
+        title: Ensure that AKS clusters are configured with managed identities
+        level: 1
+      - id: CIS-AZ-CMP-2.6
+        title: Ensure secret store CSI driver / Azure Key Vault provider is enabled
+        level: 2
+      - id: CIS-AZ-CMP-2.7
+        title: Ensure container insights / Azure Monitor for containers is enabled
+        level: 2
+      - id: CIS-AZ-CMP-2.8
+        title: Ensure that audit logs are enabled on the AKS control plane
+        level: 1
+      - id: CIS-AZ-CMP-2.9
+        title: Ensure that defender for containers is enabled at the subscription level
+        level: 2
+      - id: CIS-AZ-CMP-2.10
+        title: Ensure cluster network policy is set to 'Calico' or 'Azure'
+        level: 1
+      - id: CIS-AZ-CMP-2.11
+        title: Ensure HTTP application routing add-on is disabled
+        level: 1
+      - id: CIS-AZ-CMP-2.12
+        title: Ensure that AKS uses customer-managed keys for OS and data disk encryption
+        level: 2
+      - id: CIS-AZ-CMP-2.13
+        title: Ensure that AKS uses encryption-at-host
+        level: 2
+      - id: CIS-AZ-CMP-2.14
+        title: Ensure that AKS uses Azure Policy add-on for Kubernetes
+        level: 2
+      - id: CIS-AZ-CMP-2.15
+        title: Ensure that the cluster auto-upgrade channel is configured
+        level: 1
+      - id: CIS-AZ-CMP-2.16
+        title: Ensure node OS auto-upgrade is enabled (channel != none)
+        level: 1
+      - id: CIS-AZ-CMP-2.17
+        title: Ensure private cluster is used or API server is private endpoint enabled
+        level: 2
+      - id: CIS-AZ-CMP-2.18
+        title: Ensure pod-managed identities or workload identity is enabled (Entra Workload ID)
+        level: 2
+      - id: CIS-AZ-CMP-2.19
+        title: Ensure that 'kubenet' is replaced by 'Azure CNI' in production clusters
+        level: 2
+      - id: CIS-AZ-CMP-2.20
+        title: Ensure that Kubernetes Dashboard add-on is disabled
+        level: 1
+      - id: CIS-AZ-CMP-2.21
+        title: Ensure that diagnostics settings are configured for AKS clusters
+        level: 1
+      - id: CIS-AZ-CMP-2.22
+        title: Ensure that AKS image cleaner is enabled
+        level: 2
+      - id: CIS-AZ-CMP-2.23
+        title: Ensure that AKS clusters use a supported Kubernetes version
+        level: 1
+      - id: CIS-AZ-CMP-2.24
+        title: Ensure container image pull is restricted to approved Azure Container Registry
+        level: 2
+        automated: false
+      - id: CIS-AZ-CMP-2.25
+        title: Ensure cluster outbound type is 'userDefinedRouting' or 'managedNATGateway' for production
+        level: 2
+  - id: "3"
+    title: Azure Container Registry (ACR)
+    controls:
+      - id: CIS-AZ-CMP-3.1
+        title: Ensure ACR uses 'Premium' SKU when private endpoints / token RBAC is required
+        level: 1
+      - id: CIS-AZ-CMP-3.2
+        title: Ensure ACR admin user is disabled
+        level: 1
+      - id: CIS-AZ-CMP-3.3
+        title: Ensure ACR uses Microsoft Entra authentication / RBAC
+        level: 1
+      - id: CIS-AZ-CMP-3.4
+        title: Ensure ACR network access is restricted to selected networks / private endpoints
+        level: 1
+      - id: CIS-AZ-CMP-3.5
+        title: Ensure ACR image quarantine policy is enabled
+        level: 2
+      - id: CIS-AZ-CMP-3.6
+        title: Ensure ACR content trust / image signing policy is enabled
+        level: 2
+      - id: CIS-AZ-CMP-3.7
+        title: Ensure ACR audit logs are forwarded to Log Analytics
+        level: 1
+      - id: CIS-AZ-CMP-3.8
+        title: Ensure customer-managed keys are used for ACR encryption
+        level: 2
+      - id: CIS-AZ-CMP-3.9
+        title: Ensure that vulnerability scanning (Defender for Containers) is enabled for ACR
+        level: 2
+      - id: CIS-AZ-CMP-3.10
+        title: Ensure ACR retention policy for untagged images is enabled
+        level: 1
+      - id: CIS-AZ-CMP-3.11
+        title: Ensure ACR public network access is set to 'Disabled' (when private endpoints used)
+        level: 2
+  - id: "4"
+    title: Azure Container Instances (ACI)
+    controls:
+      - id: CIS-AZ-CMP-4.1
+        title: Ensure ACI deployments use customer-managed VNets / private endpoints
+        level: 2
+      - id: CIS-AZ-CMP-4.2
+        title: Ensure ACI containers do not run privileged
+        level: 1
+      - id: CIS-AZ-CMP-4.3
+        title: Ensure ACI uses managed identities to authenticate to Azure resources
+        level: 1
+      - id: CIS-AZ-CMP-4.4
+        title: Ensure ACI image pulls reference a trusted registry
+        level: 2
+      - id: CIS-AZ-CMP-4.5
+        title: Ensure ACI containers do not expose unnecessary public ports
+        level: 1
+      - id: CIS-AZ-CMP-4.6
+        title: Ensure ACI containers use Azure Key Vault for secrets
+        level: 2
+        automated: false
+  - id: "5"
+    title: Azure Functions
+    controls:
+      - id: CIS-AZ-CMP-5.1
+        title: Ensure Function Apps require HTTPS only
+        level: 1
+      - id: CIS-AZ-CMP-5.2
+        title: Ensure Function Apps minimum TLS version is 1.2
+        level: 1
+      - id: CIS-AZ-CMP-5.3
+        title: Ensure Function Apps use Microsoft Entra authentication (App Service Auth)
+        level: 1
+      - id: CIS-AZ-CMP-5.4
+        title: Ensure Function Apps disable FTP / use FTPS only
+        level: 1
+      - id: CIS-AZ-CMP-5.5
+        title: Ensure Function Apps disable remote debugging
+        level: 1
+      - id: CIS-AZ-CMP-5.6
+        title: Ensure Function Apps store secrets in Azure Key Vault references rather than app settings
+        level: 2
+      - id: CIS-AZ-CMP-5.7
+        title: Ensure Function Apps use system-assigned managed identity
+        level: 1
+      - id: CIS-AZ-CMP-5.8
+        title: Ensure Function Apps have diagnostic logs forwarded to Log Analytics
+        level: 1
+      - id: CIS-AZ-CMP-5.9
+        title: Ensure Function Apps disable public network access where private endpoints exist
+        level: 2
+      - id: CIS-AZ-CMP-5.10
+        title: Ensure Function Apps use the latest supported runtime version
+        level: 1
+      - id: CIS-AZ-CMP-5.11
+        title: Ensure Function Apps run on the latest stack and avoid 32-bit worker process
+        level: 2
+      - id: CIS-AZ-CMP-5.12
+        title: Ensure Function Apps enable client certificate (incoming) authentication where applicable
+        level: 2

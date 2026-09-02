@@ -1,0 +1,101 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "secbench"
+version = "0.1.0"
+description = "Cross-platform GUI auditor that runs CIS benchmarks against Azure and Microsoft 365 tenants."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Sec-Benchmarks contributors" }]
+keywords = ["cis", "benchmarks", "azure", "m365", "security", "audit"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: X11 Applications :: Qt",
+    "Environment :: MacOS X",
+    "Environment :: Win32 (MS Windows)",
+    "Intended Audience :: System Administrators",
+    "Intended Audience :: Information Technology",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: MacOS",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Security",
+]
+dependencies = [
+    "PyQt6>=6.6",
+    "qasync>=0.27",
+    "msal>=1.28",
+    "azure-identity>=1.16",
+    "azure-core>=1.30",
+    "azure-mgmt-resource>=23.0",
+    "azure-mgmt-subscription>=3.1",
+    "azure-mgmt-compute>=33.0",
+    "azure-mgmt-storage>=21.1",
+    "azure-mgmt-sql>=3.0",
+    "azure-mgmt-rdbms>=10.1",
+    "azure-mgmt-cosmosdb>=9.4",
+    "azure-mgmt-network>=25.3",
+    "azure-mgmt-keyvault>=10.3",
+    "azure-mgmt-monitor>=6.0",
+    "azure-mgmt-security>=6.0",
+    "azure-mgmt-policyinsights>=1.0",
+    "azure-mgmt-authorization>=4.0",
+    "azure-mgmt-web>=7.2",
+    "azure-mgmt-containerservice>=30.0",
+    "azure-mgmt-containerregistry>=10.3",
+    "azure-mgmt-loganalytics>=13.0",
+    "azure-keyvault-keys>=4.9",
+    "azure-keyvault-secrets>=4.8",
+    "msgraph-sdk>=1.5",
+    "httpx>=0.27",
+    "PyYAML>=6.0",
+    "Jinja2>=3.1",
+    "weasyprint>=62; platform_system != 'Windows'",
+    "reportlab>=4.0",
+    "platformdirs>=4.2",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+    "pytest-asyncio>=0.23",
+    "respx>=0.21",
+    "ruff>=0.5",
+    "mypy>=1.10",
+    "pyinstaller>=6.7",
+]
+
+[project.scripts]
+secbench = "secbench.cli:main"
+secbench-gui = "secbench.app:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+secbench = [
+    "benchmarks/**/*.yaml",
+    "reports/templates/*.j2",
+    "reports/templates/*.css",
+    "reports/templates/*.svg",
+    "gui/*.qss",
+    "gui/resources/**/*",
+]
+
+[tool.ruff]
+line-length = 110
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM"]
+ignore = ["E501"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]

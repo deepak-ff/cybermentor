@@ -1,0 +1,213 @@
+id: azure_database_2_0_0
+title: CIS Microsoft Azure Database Services Benchmark
+version: 2.0.0
+target: azure
+description: |
+  CIS Microsoft Azure Database Services Benchmark v2.0.0. Covers Azure SQL,
+  Azure Database for PostgreSQL, Azure Database for MySQL, Cosmos DB and Synapse.
+
+sections:
+  - id: "1"
+    title: Azure SQL Database / Managed Instance
+    controls:
+      - id: CIS-AZ-DB-1.1
+        title: Ensure 'Auditing' is set to 'On' for SQL servers
+        level: 1
+      - id: CIS-AZ-DB-1.2
+        title: Ensure 'Auditing' Retention is greater than 90 days
+        level: 2
+      - id: CIS-AZ-DB-1.3
+        title: Ensure no SQL Databases allow ingress from 0.0.0.0/0 (any IP)
+        level: 1
+      - id: CIS-AZ-DB-1.4
+        title: Ensure SQL server firewall does not include broad allow rules (0.0.0.0/0, AllowAllAzureIPs)
+        level: 1
+      - id: CIS-AZ-DB-1.5
+        title: Ensure SQL server's TDE protector is encrypted with Customer-managed key
+        level: 2
+      - id: CIS-AZ-DB-1.6
+        title: Ensure that 'Data encryption' (TDE) is set to 'On' on a SQL Database
+        level: 1
+      - id: CIS-AZ-DB-1.7
+        title: Ensure that Microsoft Entra authentication is configured for SQL servers
+        level: 1
+      - id: CIS-AZ-DB-1.8
+        title: Ensure that 'Allow Azure services and resources to access this server' is disabled
+        level: 1
+      - id: CIS-AZ-DB-1.9
+        title: Ensure that 'Public network access' is set to 'Disabled' on SQL servers
+        level: 2
+      - id: CIS-AZ-DB-1.10
+        title: Ensure private endpoints are configured for SQL servers
+        level: 2
+      - id: CIS-AZ-DB-1.11
+        title: Ensure SQL Server 'Minimum TLS version' is 1.2
+        level: 1
+      - id: CIS-AZ-DB-1.12
+        title: Ensure 'Microsoft Defender for SQL' is set to 'On' for critical SQL Servers
+        level: 2
+      - id: CIS-AZ-DB-1.13
+        title: Ensure that Vulnerability Assessment (VA) is enabled on SQL servers
+        level: 2
+      - id: CIS-AZ-DB-1.14
+        title: Ensure VA periodic recurring scans are enabled
+        level: 2
+      - id: CIS-AZ-DB-1.15
+        title: Ensure VA scan reports are sent to a configured recipient
+        level: 2
+      - id: CIS-AZ-DB-1.16
+        title: Ensure VA 'Also send email notifications to admins and subscription owners' is enabled
+        level: 2
+      - id: CIS-AZ-DB-1.17
+        title: Ensure 'Long-term retention' is configured for production SQL databases
+        level: 2
+        automated: false
+      - id: CIS-AZ-DB-1.18
+        title: Ensure SQL server 'Identity' uses a system-assigned or user-assigned managed identity
+        level: 2
+      - id: CIS-AZ-DB-1.19
+        title: Ensure that SQL server administrator account is not a personal user account
+        level: 1
+        automated: false
+  - id: "2"
+    title: Azure Database for PostgreSQL
+    controls:
+      - id: CIS-AZ-DB-2.1
+        title: Ensure 'Enforce SSL connection' is enabled for PostgreSQL servers
+        level: 1
+      - id: CIS-AZ-DB-2.2
+        title: Ensure 'TLS version' is set to TLSv1.2 (or higher) for PostgreSQL servers
+        level: 1
+      - id: CIS-AZ-DB-2.3
+        title: Ensure server parameter 'log_checkpoints' is ON
+        level: 1
+      - id: CIS-AZ-DB-2.4
+        title: Ensure server parameter 'log_connections' is ON
+        level: 1
+      - id: CIS-AZ-DB-2.5
+        title: Ensure server parameter 'log_disconnections' is ON
+        level: 1
+      - id: CIS-AZ-DB-2.6
+        title: Ensure server parameter 'connection_throttling' is ON
+        level: 1
+      - id: CIS-AZ-DB-2.7
+        title: Ensure server parameter 'log_retention_days' is greater than 3 days
+        level: 1
+      - id: CIS-AZ-DB-2.8
+        title: Ensure server parameter 'log_min_messages' is 'WARNING' or stricter
+        level: 1
+      - id: CIS-AZ-DB-2.9
+        title: Ensure 'Allow access to Azure services' is disabled on PostgreSQL servers
+        level: 1
+      - id: CIS-AZ-DB-2.10
+        title: Ensure 'Infrastructure double encryption' is enabled for PostgreSQL servers
+        level: 2
+      - id: CIS-AZ-DB-2.11
+        title: Ensure private endpoints are configured for PostgreSQL servers
+        level: 2
+      - id: CIS-AZ-DB-2.12
+        title: Ensure that geo-redundant backups are enabled for production PostgreSQL servers
+        level: 2
+      - id: CIS-AZ-DB-2.13
+        title: Ensure Microsoft Entra authentication is enabled for PostgreSQL flexible servers
+        level: 1
+      - id: CIS-AZ-DB-2.14
+        title: Ensure pgaudit extension is enabled for PostgreSQL flexible servers
+        level: 2
+      - id: CIS-AZ-DB-2.15
+        title: Ensure customer-managed key (CMK) encryption is configured for PostgreSQL flexible servers
+        level: 2
+  - id: "3"
+    title: Azure Database for MySQL
+    controls:
+      - id: CIS-AZ-DB-3.1
+        title: Ensure 'Enforce SSL connection' is enabled for MySQL servers
+        level: 1
+      - id: CIS-AZ-DB-3.2
+        title: Ensure 'TLS version' is set to TLSV1.2 (or higher) for MySQL servers
+        level: 1
+      - id: CIS-AZ-DB-3.3
+        title: Ensure server parameter 'audit_log_enabled' is ON for MySQL flexible servers
+        level: 2
+      - id: CIS-AZ-DB-3.4
+        title: Ensure 'audit_log_events' include CONNECTION events
+        level: 2
+      - id: CIS-AZ-DB-3.5
+        title: Ensure 'Allow access to Azure services' is disabled on MySQL servers
+        level: 1
+      - id: CIS-AZ-DB-3.6
+        title: Ensure private endpoints are configured for MySQL servers
+        level: 2
+      - id: CIS-AZ-DB-3.7
+        title: Ensure 'Public network access' is disabled when not required
+        level: 2
+      - id: CIS-AZ-DB-3.8
+        title: Ensure customer-managed key (CMK) encryption is configured for MySQL flexible servers
+        level: 2
+      - id: CIS-AZ-DB-3.9
+        title: Ensure server parameter 'slow_query_log' is ON for MySQL flexible servers
+        level: 2
+      - id: CIS-AZ-DB-3.10
+        title: Ensure geo-redundant backups are enabled for production MySQL servers
+        level: 2
+      - id: CIS-AZ-DB-3.11
+        title: Ensure Microsoft Entra authentication is enabled for MySQL flexible servers
+        level: 1
+  - id: "4"
+    title: Cosmos DB
+    controls:
+      - id: CIS-AZ-DB-4.1
+        title: Ensure 'Firewalls & Networks' is limited to selected networks for Cosmos DB
+        level: 2
+      - id: CIS-AZ-DB-4.2
+        title: Ensure private endpoints are used where possible for Cosmos DB
+        level: 2
+      - id: CIS-AZ-DB-4.3
+        title: Use Microsoft Entra Client Authentication and Azure RBAC for Cosmos DB
+        level: 1
+      - id: CIS-AZ-DB-4.4
+        title: Ensure that 'Disable local authentication' is enabled where possible
+        level: 1
+      - id: CIS-AZ-DB-4.5
+        title: Ensure customer-managed keys are used for Cosmos DB encryption (where required)
+        level: 2
+      - id: CIS-AZ-DB-4.6
+        title: Ensure diagnostic settings forward Cosmos DB control-plane and data-plane logs
+        level: 1
+      - id: CIS-AZ-DB-4.7
+        title: Ensure account-level keys are rotated regularly
+        level: 1
+        automated: false
+      - id: CIS-AZ-DB-4.8
+        title: Ensure 'Public network access' is disabled when private endpoints are used
+        level: 2
+      - id: CIS-AZ-DB-4.9
+        title: Ensure that automatic failover / multi-region writes are enabled for production
+        level: 2
+      - id: CIS-AZ-DB-4.10
+        title: Ensure that backup policy is set to 'Continuous' or appropriate frequency
+        level: 2
+  - id: "5"
+    title: Azure Synapse / Other Data Services
+    controls:
+      - id: CIS-AZ-DB-5.1
+        title: Ensure Synapse workspaces use Microsoft Entra authentication
+        level: 1
+      - id: CIS-AZ-DB-5.2
+        title: Ensure Synapse workspaces enforce TLS 1.2 minimum
+        level: 1
+      - id: CIS-AZ-DB-5.3
+        title: Ensure Synapse workspaces use customer-managed keys
+        level: 2
+      - id: CIS-AZ-DB-5.4
+        title: Ensure Synapse workspaces have private endpoints configured
+        level: 2
+      - id: CIS-AZ-DB-5.5
+        title: Ensure Synapse workspaces have auditing & threat detection enabled
+        level: 2
+      - id: CIS-AZ-DB-5.6
+        title: Ensure Synapse workspaces 'Allow Azure services' is disabled
+        level: 1
+      - id: CIS-AZ-DB-5.7
+        title: Ensure Synapse SQL pools use Vulnerability Assessment scans
+        level: 2

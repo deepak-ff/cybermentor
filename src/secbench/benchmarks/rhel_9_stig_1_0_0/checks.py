@@ -1,0 +1,172 @@
+"""Automated check registrations for CIS RHEL 9 STIG Benchmark v1.0.0."""
+
+from __future__ import annotations
+
+from ...engine.registry import check
+from .._linux_common import checks as L
+
+# 1.1.1 modules
+check("CIS-RHEL9-STIG-1.1.1.1")(L.kmod_check("cramfs"))
+check("CIS-RHEL9-STIG-1.1.1.2")(L.kmod_check("freevxfs"))
+check("CIS-RHEL9-STIG-1.1.1.3")(L.kmod_check("hfs"))
+check("CIS-RHEL9-STIG-1.1.1.4")(L.kmod_check("hfsplus"))
+check("CIS-RHEL9-STIG-1.1.1.5")(L.kmod_check("jffs2"))
+check("CIS-RHEL9-STIG-1.1.1.6")(L.kmod_check("squashfs"))
+check("CIS-RHEL9-STIG-1.1.1.7")(L.kmod_check("udf"))
+check("CIS-RHEL9-STIG-1.1.1.8")(L.kmod_check("usb-storage"))
+
+# 1.1.2 mounts
+check("CIS-RHEL9-STIG-1.1.2.1")(L.mount_check("/tmp", "noexec"))
+check("CIS-RHEL9-STIG-1.1.2.2")(L.mount_check("/var/log/audit", "noexec"))
+check("CIS-RHEL9-STIG-1.1.2.3")(L.mount_check("/home", "nodev"))
+check("CIS-RHEL9-STIG-1.1.2.4")(L.mount_check("/var/tmp", "noexec"))
+
+# 1.2 software
+check("CIS-RHEL9-STIG-1.2.1")(L.gpgcheck_global())
+check("CIS-RHEL9-STIG-1.2.2")(L.repo_gpgcheck_global())
+check("CIS-RHEL9-STIG-1.2.3")(L.updates_installed())
+
+# 1.3 boot
+check("CIS-RHEL9-STIG-1.3.2")(L.bootloader_password())
+check("CIS-RHEL9-STIG-1.3.3")(L.bootloader_perms())
+
+# 1.4 process
+check("CIS-RHEL9-STIG-1.4.1")(L.sysctl_check("kernel.randomize_va_space", "2"))
+check("CIS-RHEL9-STIG-1.4.2")(L.sysctl_check("kernel.yama.ptrace_scope", "1"))
+check("CIS-RHEL9-STIG-1.4.3")(L.core_dumps_restricted())
+check("CIS-RHEL9-STIG-1.4.4")(L.package_missing_check("prelink"))
+check("CIS-RHEL9-STIG-1.4.5")(L.package_missing_check("abrt-cli"))
+
+# 1.5 SELinux
+check("CIS-RHEL9-STIG-1.5.1")(L.selinux_installed())
+check("CIS-RHEL9-STIG-1.5.2")(L.selinux_not_disabled_in_bootloader())
+check("CIS-RHEL9-STIG-1.5.3")(L.selinux_policy_targeted())
+check("CIS-RHEL9-STIG-1.5.4")(L.selinux_enforcing())
+check("CIS-RHEL9-STIG-1.5.5")(L.package_missing_check("setroubleshoot"))
+check("CIS-RHEL9-STIG-1.5.6")(L.package_missing_check("mcstrans"))
+
+# 1.6 crypto - STIG mandates FIPS
+check("CIS-RHEL9-STIG-1.6.1")(L.crypto_policy_min(("FIPS",)))
+check("CIS-RHEL9-STIG-1.6.2")(L.crypto_policy_no_sha1())
+
+# 1.7 banners
+check("CIS-RHEL9-STIG-1.7.2")(L.banner_file_check("/etc/issue"))
+check("CIS-RHEL9-STIG-1.7.3")(L.banner_file_check("/etc/issue.net"))
+check("CIS-RHEL9-STIG-1.7.4")(L.file_perm("/etc/motd", max_mode="644"))
+check("CIS-RHEL9-STIG-1.7.5")(L.file_perm("/etc/issue", max_mode="644"))
+check("CIS-RHEL9-STIG-1.7.6")(L.file_perm("/etc/issue.net", max_mode="644"))
+
+# 1.8
+check("CIS-RHEL9-STIG-1.8.1")(L.package_missing_check("gdm"))
+
+# 2.1
+check("CIS-RHEL9-STIG-2.1.1")(L.chrony_in_use())
+
+# 2.2
+check("CIS-RHEL9-STIG-2.2.1")(L.package_missing_check("xinetd"))
+check("CIS-RHEL9-STIG-2.2.2")(L.package_missing_check("xorg-x11-server-common"))
+check("CIS-RHEL9-STIG-2.2.3")(L.package_missing_check("avahi"))
+check("CIS-RHEL9-STIG-2.2.4")(L.package_missing_check("cups"))
+check("CIS-RHEL9-STIG-2.2.5")(L.package_missing_check("dhcp-server"))
+check("CIS-RHEL9-STIG-2.2.6")(L.package_missing_check("bind"))
+check("CIS-RHEL9-STIG-2.2.7")(L.package_missing_check("vsftpd"))
+check("CIS-RHEL9-STIG-2.2.8")(L.package_missing_check("tftp-server"))
+check("CIS-RHEL9-STIG-2.2.9")(L.package_missing_check("httpd"))
+check("CIS-RHEL9-STIG-2.2.10")(L.package_missing_check("dovecot"))
+check("CIS-RHEL9-STIG-2.2.11")(L.package_missing_check("samba"))
+check("CIS-RHEL9-STIG-2.2.12")(L.package_missing_check("squid"))
+check("CIS-RHEL9-STIG-2.2.13")(L.package_missing_check("net-snmp"))
+check("CIS-RHEL9-STIG-2.2.14")(L.package_missing_check("ypserv"))
+check("CIS-RHEL9-STIG-2.2.15")(L.package_missing_check("telnet-server"))
+
+# 2.3
+check("CIS-RHEL9-STIG-2.3.1")(L.package_missing_check("rsh"))
+check("CIS-RHEL9-STIG-2.3.2")(L.package_missing_check("talk"))
+check("CIS-RHEL9-STIG-2.3.3")(L.package_missing_check("telnet"))
+check("CIS-RHEL9-STIG-2.3.4")(L.package_missing_check("tftp"))
+
+# 2.4
+check("CIS-RHEL9-STIG-2.4.1")(L.service_enabled_check("crond"))
+check("CIS-RHEL9-STIG-2.4.2")(L.file_perm("/etc/crontab", max_mode="600"))
+check("CIS-RHEL9-STIG-2.4.3")(L.file_perm("/etc/cron.d", max_mode="700"))
+
+# 3
+check("CIS-RHEL9-STIG-3.1.1")(L.kmod_check("cfg80211"))
+check("CIS-RHEL9-STIG-3.1.2")(L.service_disabled_check("bluetooth.service",
+                                                        also_check_packages=["bluez"]))
+check("CIS-RHEL9-STIG-3.2.1")(L.kmod_check("dccp"))
+check("CIS-RHEL9-STIG-3.2.2")(L.kmod_check("tipc"))
+check("CIS-RHEL9-STIG-3.2.3")(L.kmod_check("rds"))
+check("CIS-RHEL9-STIG-3.2.4")(L.kmod_check("sctp"))
+check("CIS-RHEL9-STIG-3.3.1")(L.sysctl_check("net.ipv4.ip_forward", "0"))
+check("CIS-RHEL9-STIG-3.3.2")(L.sysctl_check("net.ipv4.conf.all.send_redirects", "0"))
+check("CIS-RHEL9-STIG-3.3.3")(L.sysctl_check("net.ipv4.icmp_ignore_bogus_error_responses", "1"))
+check("CIS-RHEL9-STIG-3.3.4")(L.sysctl_check("net.ipv4.icmp_echo_ignore_broadcasts", "1"))
+check("CIS-RHEL9-STIG-3.3.5")(L.sysctl_check("net.ipv4.conf.all.accept_redirects", "0"))
+check("CIS-RHEL9-STIG-3.3.6")(L.sysctl_check("net.ipv4.conf.all.secure_redirects", "0"))
+check("CIS-RHEL9-STIG-3.3.7")(L.sysctl_check("net.ipv4.conf.all.rp_filter", "1"))
+check("CIS-RHEL9-STIG-3.3.8")(L.sysctl_check("net.ipv4.conf.all.accept_source_route", "0"))
+check("CIS-RHEL9-STIG-3.3.9")(L.sysctl_check("net.ipv4.conf.all.log_martians", "1"))
+check("CIS-RHEL9-STIG-3.3.10")(L.sysctl_check("net.ipv4.tcp_syncookies", "1"))
+check("CIS-RHEL9-STIG-3.3.11")(L.sysctl_check("net.ipv6.conf.all.accept_ra", "0"))
+check("CIS-RHEL9-STIG-3.4.1")(L.service_enabled_check("firewalld"))
+check("CIS-RHEL9-STIG-3.4.2")(L.package_missing_check("iptables-services"))
+
+# 4
+check("CIS-RHEL9-STIG-4.1.1")(L.auditd_enabled())
+check("CIS-RHEL9-STIG-4.1.2")(L.audit_grub_arg())
+check("CIS-RHEL9-STIG-4.1.3")(L.audit_backlog_limit())
+check("CIS-RHEL9-STIG-4.2.1")(L.rsyslog_installed())
+check("CIS-RHEL9-STIG-4.2.2")(L.rsyslog_enabled())
+check("CIS-RHEL9-STIG-4.2.3")(L.package_present_check("systemd-journal-remote"))
+
+# 5.1 sshd
+check("CIS-RHEL9-STIG-5.1.1")(L.file_perm("/etc/ssh/sshd_config", max_mode="600"))
+check("CIS-RHEL9-STIG-5.1.2")(L.sshd_param("loglevel", "VERBOSE"))
+check("CIS-RHEL9-STIG-5.1.3")(L.sshd_param("usepam", "yes"))
+check("CIS-RHEL9-STIG-5.1.4")(L.sshd_param("permitrootlogin", "no"))
+check("CIS-RHEL9-STIG-5.1.5")(L.sshd_param("hostbasedauthentication", "no"))
+check("CIS-RHEL9-STIG-5.1.6")(L.sshd_param("permitemptypasswords", "no"))
+check("CIS-RHEL9-STIG-5.1.7")(L.sshd_param("permituserenvironment", "no"))
+check("CIS-RHEL9-STIG-5.1.8")(L.sshd_param("ignorerhosts", "yes"))
+check("CIS-RHEL9-STIG-5.1.9")(L.sshd_param("x11forwarding", "no"))
+check("CIS-RHEL9-STIG-5.1.10")(L.sshd_param("banner", "/etc/issue.net"))
+check("CIS-RHEL9-STIG-5.1.11")(L.sshd_int_max("maxauthtries", 4))
+check("CIS-RHEL9-STIG-5.1.12")(L.sshd_int_max("maxsessions", 10))
+check("CIS-RHEL9-STIG-5.1.13")(L.sshd_int_max("logingracetime", 60))
+
+# 5.2 sudo
+check("CIS-RHEL9-STIG-5.2.1")(L.package_present_check("sudo"))
+check("CIS-RHEL9-STIG-5.2.2")(L.sudo_use_pty())
+check("CIS-RHEL9-STIG-5.2.3")(L.sudo_log_file())
+check("CIS-RHEL9-STIG-5.2.4")(L.sudo_no_nopasswd())
+check("CIS-RHEL9-STIG-5.2.5")(L.sudo_no_authenticate_disabled())
+check("CIS-RHEL9-STIG-5.2.6")(L.sudo_timestamp_timeout())
+check("CIS-RHEL9-STIG-5.2.7")(L.su_restricted())
+
+# 5.3 PAM (STIG: stricter min length 15)
+check("CIS-RHEL9-STIG-5.3.1")(L.password_min_length(15))
+check("CIS-RHEL9-STIG-5.3.2")(L.password_lockout())
+check("CIS-RHEL9-STIG-5.3.3")(L.password_reuse())
+check("CIS-RHEL9-STIG-5.3.4")(L.password_hash_strong())
+
+# 5.4 (STIG: 60-day password expiry, umask 077)
+check("CIS-RHEL9-STIG-5.4.1")(L.password_max_days(60))
+check("CIS-RHEL9-STIG-5.4.2")(L.password_min_days(1))
+check("CIS-RHEL9-STIG-5.4.3")(L.password_warn_age(7))
+check("CIS-RHEL9-STIG-5.4.4")(L.umask_restrictive("077"))
+
+# 6.1
+check("CIS-RHEL9-STIG-6.1.1")(L.file_perm("/etc/passwd", max_mode="644"))
+check("CIS-RHEL9-STIG-6.1.2")(L.file_perm("/etc/group", max_mode="644"))
+check("CIS-RHEL9-STIG-6.1.3")(L.file_perm("/etc/shadow", max_mode="000", group="root"))
+check("CIS-RHEL9-STIG-6.1.4")(L.file_perm("/etc/gshadow", max_mode="000", group="root"))
+check("CIS-RHEL9-STIG-6.1.5")(L.no_world_writable())
+check("CIS-RHEL9-STIG-6.1.6")(L.no_unowned_files())
+
+# 6.2
+check("CIS-RHEL9-STIG-6.2.1")(L.shadowed_passwords())
+check("CIS-RHEL9-STIG-6.2.2")(L.no_empty_shadow_pw())
+check("CIS-RHEL9-STIG-6.2.3")(L.duplicate_uids())
+check("CIS-RHEL9-STIG-6.2.4")(L.duplicate_gids())
+check("CIS-RHEL9-STIG-6.2.5")(L.root_only_uid_zero())

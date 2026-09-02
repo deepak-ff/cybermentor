@@ -1,0 +1,532 @@
+id: azure_foundations_6_0_0
+title: CIS Microsoft Azure Foundations Benchmark
+version: 6.0.0
+target: azure
+description: |
+  CIS Microsoft Azure Foundations Benchmark v6.0.0 - prescriptive guidance for
+  establishing a secure baseline configuration for Microsoft Azure tenants.
+  Sec-Benchmarks reproduces only short factual references; refer to the official
+  CIS PDF for full audit/remediation prose.
+
+sections:
+  - id: "1"
+    title: Identity and Access Management
+    controls:
+      - id: CIS-AZ-FND-1.1.1
+        title: Ensure Security Defaults is enabled on Azure Active Directory
+        level: 1
+        rationale: Security Defaults enforces baseline MFA / legacy auth blocking for all users.
+        audit: Entra ID > Properties > Manage Security defaults.
+        remediation: Enable Security Defaults if Conditional Access is not in use.
+      - id: CIS-AZ-FND-1.1.2
+        title: Ensure that 'Multi-Factor Auth Status' is 'Enabled' for all Privileged Users
+        level: 1
+      - id: CIS-AZ-FND-1.1.3
+        title: Ensure that 'Multi-Factor Auth Status' is 'Enabled' for all Non-Privileged Users
+        level: 2
+      - id: CIS-AZ-FND-1.1.4
+        title: Ensure that 'Allow users to remember multi-factor authentication on devices they trust' is Disabled
+        level: 1
+      - id: CIS-AZ-FND-1.2.1
+        title: Ensure Trusted Locations Are Defined
+        level: 2
+      - id: CIS-AZ-FND-1.2.2
+        title: Ensure that an exclusionary Geographic Access Policy is considered
+        level: 2
+        automated: false
+      - id: CIS-AZ-FND-1.2.3
+        title: Ensure that A Multi-factor Authentication Policy Exists for Administrative Groups
+        level: 1
+      - id: CIS-AZ-FND-1.2.4
+        title: Ensure that A Multi-factor Authentication Policy Exists for All Users
+        level: 1
+      - id: CIS-AZ-FND-1.2.5
+        title: Ensure Multi-factor Authentication is Required for Risky Sign-ins
+        level: 1
+      - id: CIS-AZ-FND-1.2.6
+        title: Ensure Multi-factor Authentication is Required for Azure Management
+        level: 1
+      - id: CIS-AZ-FND-1.3
+        title: Ensure that 'Restrict non-admin users from creating tenants' is set to 'Yes'
+        level: 1
+      - id: CIS-AZ-FND-1.4
+        title: Ensure Guest Users Are Reviewed on a Regular Basis
+        level: 1
+        automated: false
+      - id: CIS-AZ-FND-1.5
+        title: Ensure That 'Number of methods required to reset' is set to '2'
+        level: 1
+      - id: CIS-AZ-FND-1.6
+        title: Ensure that account 'Lockout Threshold' is less than or equal to '10'
+        level: 1
+      - id: CIS-AZ-FND-1.7
+        title: Ensure that account 'Lockout duration in seconds' is greater than or equal to '60'
+        level: 1
+      - id: CIS-AZ-FND-1.8
+        title: Ensure that a Custom Bad Password List is set to 'Enforce' for your Organization
+        level: 1
+      - id: CIS-AZ-FND-1.9
+        title: Ensure that 'Number of days before users are asked to re-confirm their authentication information' is not set to '0'
+        level: 1
+      - id: CIS-AZ-FND-1.10
+        title: Ensure that 'Notify users on password resets?' is set to 'Yes'
+        level: 1
+      - id: CIS-AZ-FND-1.11
+        title: Ensure that 'Notify all admins when other admins reset their password?' is set to 'Yes'
+        level: 2
+      - id: CIS-AZ-FND-1.12
+        title: Ensure 'User consent for applications' is set to 'Allow for verified publishers'
+        level: 2
+      - id: CIS-AZ-FND-1.13
+        title: Ensure that 'Users can add gallery apps to My Apps' is set to 'No'
+        level: 2
+      - id: CIS-AZ-FND-1.14
+        title: Ensure 'Users can register applications' is set to 'No'
+        level: 1
+      - id: CIS-AZ-FND-1.15
+        title: Ensure that 'Guest invite restrictions' is set to "Only users assigned to specific admin roles can invite guest users"
+        level: 1
+      - id: CIS-AZ-FND-1.16
+        title: Ensure that 'Guest user access restrictions' is set to "Guest user access is restricted to properties and memberships of their own directory objects"
+        level: 1
+      - id: CIS-AZ-FND-1.17
+        title: Ensure that 'Restrict access to Microsoft Entra admin center' is set to 'Yes'
+        level: 1
+      - id: CIS-AZ-FND-1.18
+        title: Ensure that 'Restrict user ability to access groups features in My Groups' is set to 'Yes'
+        level: 2
+      - id: CIS-AZ-FND-1.19
+        title: Ensure that 'Users can create security groups in Azure portals, API or PowerShell' is set to 'No'
+        level: 2
+      - id: CIS-AZ-FND-1.20
+        title: Ensure that 'Owners can manage group membership requests in My Groups' is set to 'No'
+        level: 2
+      - id: CIS-AZ-FND-1.21
+        title: Ensure that 'Users can create Microsoft 365 groups in Azure portals, API or PowerShell' is set to 'No'
+        level: 2
+      - id: CIS-AZ-FND-1.22
+        title: Ensure 'Require Multi-Factor Authentication to register or join devices with Microsoft Entra' is set to 'Yes'
+        level: 1
+      - id: CIS-AZ-FND-1.23
+        title: Ensure That No Custom Subscription Administrator Roles Exist
+        level: 1
+      - id: CIS-AZ-FND-1.24
+        title: Ensure a Custom Role is Assigned Permissions for Administering Resource Locks
+        level: 2
+      - id: CIS-AZ-FND-1.25
+        title: Ensure That 'Subscription leaving Microsoft Entra tenant' and 'Subscription entering Microsoft Entra tenant' Is Set To 'Permit no one'
+        level: 2
+      - id: CIS-AZ-FND-1.26
+        title: Ensure fewer than 5 users have global administrator assignment
+        level: 1
+      - id: CIS-AZ-FND-1.27
+        title: Ensure 'Restrict non-admin users from creating tenants' is set to 'Yes' (PIM)
+        level: 1
+  - id: "2"
+    title: Microsoft Defender
+    controls:
+      - id: CIS-AZ-FND-2.1.1
+        title: Ensure That Microsoft Defender for Servers Is Set to 'On'
+        level: 2
+      - id: CIS-AZ-FND-2.1.2
+        title: Ensure That Microsoft Defender for App Services Is Set to 'On'
+        level: 2
+      - id: CIS-AZ-FND-2.1.3
+        title: Ensure That Microsoft Defender for Databases Is Set to 'On'
+        level: 2
+      - id: CIS-AZ-FND-2.1.4
+        title: Ensure That Microsoft Defender for Azure SQL Databases Is Set to 'On'
+        level: 2
+      - id: CIS-AZ-FND-2.1.5
+        title: Ensure That Microsoft Defender for SQL Servers on Machines Is Set to 'On'
+        level: 2
+      - id: CIS-AZ-FND-2.1.6
+        title: Ensure That Microsoft Defender for Open-Source Relational Databases Is Set to 'On'
+        level: 2
+      - id: CIS-AZ-FND-2.1.7
+        title: Ensure That Microsoft Defender for Storage Is Set to 'On'
+        level: 2
+      - id: CIS-AZ-FND-2.1.8
+        title: Ensure That Microsoft Defender for Containers Is Set to 'On'
+        level: 2
+      - id: CIS-AZ-FND-2.1.9
+        title: Ensure That Microsoft Defender for Cosmos DB Is Set to 'On'
+        level: 2
+      - id: CIS-AZ-FND-2.1.10
+        title: Ensure That Microsoft Defender for Key Vault Is Set to 'On'
+        level: 2
+      - id: CIS-AZ-FND-2.1.11
+        title: Ensure That Microsoft Defender for DNS Is Set to 'On'
+        level: 2
+      - id: CIS-AZ-FND-2.1.12
+        title: Ensure That Microsoft Defender for Resource Manager Is Set to 'On'
+        level: 2
+      - id: CIS-AZ-FND-2.1.13
+        title: Ensure That Microsoft Defender Recommendation 'Apply system updates' Status Is 'Completed'
+        level: 1
+      - id: CIS-AZ-FND-2.1.14
+        title: Ensure any of the ASC Default Policy Settings is Not Set to 'Disabled'
+        level: 1
+      - id: CIS-AZ-FND-2.1.15
+        title: Ensure That 'Auto provisioning' is Set to 'On' for Log Analytics agent for Azure VMs
+        level: 1
+      - id: CIS-AZ-FND-2.1.16
+        title: Ensure That 'Auto provisioning' is Set to 'On' for Vulnerability assessment for machines
+        level: 2
+      - id: CIS-AZ-FND-2.1.17
+        title: Ensure that Microsoft Defender Cloud Security Posture Management (CSPM) plan is enabled
+        level: 2
+      - id: CIS-AZ-FND-2.1.18
+        title: Ensure that 'Vulnerability assessment for machines' component is set to status 'On'
+        level: 1
+      - id: CIS-AZ-FND-2.1.19
+        title: Ensure that 'Endpoint protection' component is set to 'On'
+        level: 1
+      - id: CIS-AZ-FND-2.1.20
+        title: Ensure that 'Agentless scanning for machines' component is set to status 'On'
+        level: 2
+      - id: CIS-AZ-FND-2.1.21
+        title: Ensure that 'Agentless container vulnerability assessment' is set to status 'On'
+        level: 2
+      - id: CIS-AZ-FND-2.1.22
+        title: Ensure that 'Additional email addresses' is configured with a security contact email
+        level: 1
+      - id: CIS-AZ-FND-2.1.23
+        title: Ensure That 'Notify about alerts with the following severity' is Set to 'High'
+        level: 1
+      - id: CIS-AZ-FND-2.1.24
+        title: Ensure that 'All users with the following roles' is set to 'Owner'
+        level: 1
+      - id: CIS-AZ-FND-2.1.25
+        title: Ensure that 'Microsoft Defender for IoT' is enabled
+        level: 2
+      - id: CIS-AZ-FND-2.1.26
+        title: Ensure that Microsoft Defender External Attack Surface Monitoring (EASM) is enabled
+        level: 2
+      - id: CIS-AZ-FND-2.2.1
+        title: Ensure That Auto provisioning of 'Log Analytics agent for Azure VMs' is Set to 'On'
+        level: 1
+      - id: CIS-AZ-FND-2.2.2
+        title: Ensure that Microsoft Defender for Cloud Apps integration with Microsoft Defender for Cloud is Selected
+        level: 2
+  - id: "3"
+    title: Storage Accounts
+    controls:
+      - id: CIS-AZ-FND-3.1
+        title: Ensure that 'Secure transfer required' is set to 'Enabled'
+        level: 1
+      - id: CIS-AZ-FND-3.2
+        title: Ensure that 'Enable Infrastructure Encryption' is set to 'Enabled' for storage accounts
+        level: 2
+      - id: CIS-AZ-FND-3.3
+        title: Ensure that 'Enable key rotation reminders' is enabled for each Storage Account
+        level: 2
+      - id: CIS-AZ-FND-3.4
+        title: Ensure that Storage Account Access Keys are Periodically Regenerated
+        level: 2
+        automated: false
+      - id: CIS-AZ-FND-3.5
+        title: Ensure Storage Logging is Enabled for Queue Service for 'Read', 'Write', and 'Delete' requests
+        level: 2
+      - id: CIS-AZ-FND-3.6
+        title: Ensure that Shared Access Signature Tokens Expire Within an Hour
+        level: 1
+        automated: false
+      - id: CIS-AZ-FND-3.7
+        title: Ensure that 'Public Network Access' is 'Disabled' for storage accounts
+        level: 1
+      - id: CIS-AZ-FND-3.8
+        title: Ensure Default Network Access Rule for Storage Accounts is Set to Deny
+        level: 1
+      - id: CIS-AZ-FND-3.9
+        title: Ensure 'Allow Azure services on the trusted services list to access this storage account' is Enabled for Storage Account Access
+        level: 2
+      - id: CIS-AZ-FND-3.10
+        title: Ensure Private Endpoints are used to access Storage Accounts
+        level: 1
+      - id: CIS-AZ-FND-3.11
+        title: Ensure Soft Delete is Enabled for Azure Containers and Blob Storage
+        level: 1
+      - id: CIS-AZ-FND-3.12
+        title: Ensure Storage for Critical Data are Encrypted with Customer Managed Keys (CMK)
+        level: 2
+      - id: CIS-AZ-FND-3.13
+        title: Ensure Storage logging is Enabled for Blob Service for 'Read', 'Write', and 'Delete' requests
+        level: 2
+      - id: CIS-AZ-FND-3.14
+        title: Ensure Storage logging is enabled for Table service for 'Read', 'Write', and 'Delete' requests
+        level: 2
+      - id: CIS-AZ-FND-3.15
+        title: Ensure the "Minimum TLS version" for storage accounts is set to "Version 1.2"
+        level: 1
+      - id: CIS-AZ-FND-3.16
+        title: Ensure 'Cross Tenant Replication' is not enabled
+        level: 2
+      - id: CIS-AZ-FND-3.17
+        title: Ensure that 'Allow Blob Anonymous Access' is set to 'Disabled'
+        level: 1
+  - id: "4"
+    title: Database Services
+    controls:
+      - id: CIS-AZ-FND-4.1.1
+        title: Ensure that 'Auditing' is set to 'On' for SQL servers
+        level: 1
+      - id: CIS-AZ-FND-4.1.2
+        title: Ensure no SQL Databases allow ingress from 0.0.0.0/0 (any IP)
+        level: 1
+      - id: CIS-AZ-FND-4.1.3
+        title: Ensure SQL server's Transparent Data Encryption (TDE) protector is encrypted with Customer-managed key
+        level: 2
+      - id: CIS-AZ-FND-4.1.4
+        title: Ensure that Microsoft Entra authentication is Configured for SQL Servers
+        level: 1
+      - id: CIS-AZ-FND-4.1.5
+        title: Ensure that 'Data encryption' is set to 'On' on a SQL Database
+        level: 1
+      - id: CIS-AZ-FND-4.1.6
+        title: Ensure that 'Auditing' Retention is 'greater than 90 days'
+        level: 2
+      - id: CIS-AZ-FND-4.2.1
+        title: Ensure that Microsoft Defender for SQL is set to 'On' for critical SQL Servers
+        level: 2
+      - id: CIS-AZ-FND-4.2.2
+        title: Ensure that Vulnerability Assessment (VA) is enabled on a SQL server by setting a Storage Account
+        level: 2
+      - id: CIS-AZ-FND-4.2.3
+        title: Ensure that Vulnerability Assessment (VA) setting 'Periodic recurring scans' is set to 'on' for each SQL server
+        level: 2
+      - id: CIS-AZ-FND-4.2.4
+        title: Ensure that Vulnerability Assessment (VA) setting 'Send scan reports to' is configured for a SQL server
+        level: 2
+      - id: CIS-AZ-FND-4.2.5
+        title: Ensure that Vulnerability Assessment (VA) setting 'Also send email notifications to admins and subscription owners' is set for a SQL server
+        level: 2
+      - id: CIS-AZ-FND-4.3.1
+        title: Ensure 'Enforce SSL connection' is set to 'ENABLED' for PostgreSQL flexible servers
+        level: 1
+      - id: CIS-AZ-FND-4.3.2
+        title: Ensure server parameter 'log_checkpoints' is set to 'ON' for PostgreSQL servers
+        level: 1
+      - id: CIS-AZ-FND-4.3.3
+        title: Ensure server parameter 'log_connections' is set to 'ON' for PostgreSQL servers
+        level: 1
+      - id: CIS-AZ-FND-4.3.4
+        title: Ensure server parameter 'log_disconnections' is set to 'ON' for PostgreSQL servers
+        level: 1
+      - id: CIS-AZ-FND-4.3.5
+        title: Ensure server parameter 'connection_throttling' is set to 'ON' for PostgreSQL servers
+        level: 1
+      - id: CIS-AZ-FND-4.3.6
+        title: Ensure server parameter 'log_retention_days' is greater than 3 days for PostgreSQL servers
+        level: 1
+      - id: CIS-AZ-FND-4.3.7
+        title: Ensure 'Allow access to Azure services' for PostgreSQL servers is disabled
+        level: 1
+      - id: CIS-AZ-FND-4.3.8
+        title: Ensure 'Infrastructure double encryption' for PostgreSQL servers is 'Enabled'
+        level: 2
+      - id: CIS-AZ-FND-4.4.1
+        title: Ensure 'Enforce SSL connection' is set to 'Enabled' for Standard MySQL Database Server
+        level: 1
+      - id: CIS-AZ-FND-4.4.2
+        title: Ensure 'TLS Version' is set to 'TLSV1.2' for MySQL flexible Database Server
+        level: 1
+      - id: CIS-AZ-FND-4.4.3
+        title: Ensure server parameter 'audit_log_enabled' is set to 'ON' for MySQL flexible servers
+        level: 2
+      - id: CIS-AZ-FND-4.4.4
+        title: Ensure server parameter 'audit_log_events' has 'CONNECTION' set for MySQL flexible servers
+        level: 2
+      - id: CIS-AZ-FND-4.5.1
+        title: Ensure That 'Firewalls & Networks' Is Limited to Use Selected Networks Instead of All Networks for Cosmos DB
+        level: 2
+      - id: CIS-AZ-FND-4.5.2
+        title: Ensure That Private Endpoints Are Used Where Possible for Cosmos DB
+        level: 2
+      - id: CIS-AZ-FND-4.5.3
+        title: Use Microsoft Entra Client Authentication and Azure RBAC where possible for Cosmos DB
+        level: 1
+  - id: "5"
+    title: Logging and Monitoring
+    controls:
+      - id: CIS-AZ-FND-5.1.1
+        title: Ensure that a 'Diagnostic Setting' exists for Subscription Activity Logs
+        level: 1
+      - id: CIS-AZ-FND-5.1.2
+        title: Ensure Diagnostic Setting captures appropriate categories
+        level: 1
+      - id: CIS-AZ-FND-5.1.3
+        title: Ensure the storage account containing the container with activity logs is encrypted with Customer Managed Key
+        level: 2
+      - id: CIS-AZ-FND-5.1.4
+        title: Ensure that logging for Azure Key Vault is 'Enabled'
+        level: 1
+      - id: CIS-AZ-FND-5.1.5
+        title: Ensure that Network Security Group Flow logs are captured and sent to Log Analytics
+        level: 2
+      - id: CIS-AZ-FND-5.1.6
+        title: Ensure that logging for Azure AppService 'HTTP logs' is enabled
+        level: 2
+      - id: CIS-AZ-FND-5.2.1
+        title: Ensure that Activity Log Alert exists for Create Policy Assignment
+        level: 1
+      - id: CIS-AZ-FND-5.2.2
+        title: Ensure that Activity Log Alert exists for Delete Policy Assignment
+        level: 1
+      - id: CIS-AZ-FND-5.2.3
+        title: Ensure that Activity Log Alert exists for Create or Update Network Security Group
+        level: 1
+      - id: CIS-AZ-FND-5.2.4
+        title: Ensure that Activity Log Alert exists for Delete Network Security Group
+        level: 1
+      - id: CIS-AZ-FND-5.2.5
+        title: Ensure that Activity Log Alert exists for Create or Update Solution
+        level: 1
+      - id: CIS-AZ-FND-5.2.6
+        title: Ensure that Activity Log Alert exists for Create or Update SQL Server Firewall Rule
+        level: 1
+      - id: CIS-AZ-FND-5.2.7
+        title: Ensure that Activity Log Alert exists for Delete SQL Server Firewall Rule
+        level: 1
+      - id: CIS-AZ-FND-5.2.8
+        title: Ensure that Activity Log Alert exists for Create or Update Public IP Address rule
+        level: 2
+      - id: CIS-AZ-FND-5.3.1
+        title: Ensure Application Insights are Configured
+        level: 2
+        automated: false
+      - id: CIS-AZ-FND-5.4
+        title: Ensure that Azure Monitor Resource Logging is Enabled for All Services that Support it
+        level: 1
+        automated: false
+      - id: CIS-AZ-FND-5.5
+        title: Ensure that SKU Basic/Consumption is not used on artifacts that need to be monitored (Particularly for Production Workloads)
+        level: 2
+  - id: "6"
+    title: Networking
+    controls:
+      - id: CIS-AZ-FND-6.1
+        title: Ensure that RDP access from the Internet is evaluated and restricted
+        level: 1
+      - id: CIS-AZ-FND-6.2
+        title: Ensure that SSH access from the Internet is evaluated and restricted
+        level: 1
+      - id: CIS-AZ-FND-6.3
+        title: Ensure that UDP Services are restricted from the Internet
+        level: 1
+      - id: CIS-AZ-FND-6.4
+        title: Ensure that HTTP(S) access from the Internet is evaluated and restricted
+        level: 2
+      - id: CIS-AZ-FND-6.5
+        title: Ensure that Network Security Group Flow Log retention period is 'greater than 90 days'
+        level: 2
+      - id: CIS-AZ-FND-6.6
+        title: Ensure that Network Watcher is 'Enabled' for Azure Regions that are in use
+        level: 2
+      - id: CIS-AZ-FND-6.7
+        title: Ensure that Public IP addresses are Evaluated on a Periodic Basis
+        level: 1
+        automated: false
+  - id: "7"
+    title: Virtual Machines
+    controls:
+      - id: CIS-AZ-FND-7.1
+        title: Ensure an Azure Bastion Host Exists
+        level: 2
+      - id: CIS-AZ-FND-7.2
+        title: Ensure Virtual Machines are utilizing Managed Disks
+        level: 1
+      - id: CIS-AZ-FND-7.3
+        title: Ensure that 'OS and Data' disks are encrypted with Customer Managed Key (CMK)
+        level: 2
+      - id: CIS-AZ-FND-7.4
+        title: Ensure that 'Unattached disks' are encrypted with 'Customer Managed Key' (CMK)
+        level: 2
+      - id: CIS-AZ-FND-7.5
+        title: Ensure that Only Approved Extensions Are Installed
+        level: 1
+        automated: false
+      - id: CIS-AZ-FND-7.6
+        title: Ensure that Endpoint Protection for all Virtual Machines is installed
+        level: 2
+      - id: CIS-AZ-FND-7.7
+        title: Ensure that VHDs are Encrypted
+        level: 2
+      - id: CIS-AZ-FND-7.8
+        title: Ensure only MFA enabled identities can access privileged Virtual Machine
+        level: 2
+        automated: false
+      - id: CIS-AZ-FND-7.9
+        title: Ensure Trusted Launch is enabled on Virtual Machines
+        level: 2
+  - id: "8"
+    title: Key Vault
+    controls:
+      - id: CIS-AZ-FND-8.1
+        title: Ensure that the Expiration Date is set for all Keys in RBAC Key Vaults
+        level: 1
+      - id: CIS-AZ-FND-8.2
+        title: Ensure that the Expiration Date is set for all Keys in Non-RBAC Key Vaults
+        level: 1
+      - id: CIS-AZ-FND-8.3
+        title: Ensure that the Expiration Date is set for all Secrets in RBAC Key Vaults
+        level: 1
+      - id: CIS-AZ-FND-8.4
+        title: Ensure that the Expiration Date is set for all Secrets in Non-RBAC Key Vaults
+        level: 1
+      - id: CIS-AZ-FND-8.5
+        title: Ensure the Key Vault is Recoverable (soft delete & purge protection)
+        level: 1
+      - id: CIS-AZ-FND-8.6
+        title: Enable Role Based Access Control for Azure Key Vault
+        level: 1
+      - id: CIS-AZ-FND-8.7
+        title: Ensure that Private Endpoints are Used for Azure Key Vault
+        level: 2
+      - id: CIS-AZ-FND-8.8
+        title: Ensure Automatic Key Rotation is Enabled Within Azure Key Vault for the Supported Services
+        level: 2
+  - id: "9"
+    title: AppService
+    controls:
+      - id: CIS-AZ-FND-9.1
+        title: Ensure 'HTTPS Only' is set to 'On'
+        level: 1
+      - id: CIS-AZ-FND-9.2
+        title: Ensure App Service Authentication is set up for apps in Azure App Service
+        level: 2
+      - id: CIS-AZ-FND-9.3
+        title: Ensure 'FTP State' is set to 'FTPS Only' or 'Disabled'
+        level: 1
+      - id: CIS-AZ-FND-9.4
+        title: Ensure Web App is using the latest version of TLS encryption
+        level: 1
+      - id: CIS-AZ-FND-9.5
+        title: Ensure that Register with Microsoft Entra is enabled on App Service
+        level: 1
+      - id: CIS-AZ-FND-9.6
+        title: Ensure that 'PHP version' is currently supported (if in use)
+        level: 1
+      - id: CIS-AZ-FND-9.7
+        title: Ensure that 'Python version' is currently supported (if in use)
+        level: 1
+      - id: CIS-AZ-FND-9.8
+        title: Ensure that 'Java version' is currently supported (if in use)
+        level: 1
+      - id: CIS-AZ-FND-9.9
+        title: Ensure that 'HTTP Version' is the Latest, if Used to Run the Web App
+        level: 1
+      - id: CIS-AZ-FND-9.10
+        title: Ensure FTP deployments are Disabled
+        level: 1
+      - id: CIS-AZ-FND-9.11
+        title: Ensure Azure Key Vaults are Used to Store Secrets
+        level: 2
+        automated: false
+  - id: "10"
+    title: Miscellaneous
+    controls:
+      - id: CIS-AZ-FND-10.1
+        title: Ensure that Resource Locks are set for Mission-Critical Azure Resources
+        level: 2
+        automated: false
