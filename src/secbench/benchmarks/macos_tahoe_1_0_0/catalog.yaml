@@ -1,0 +1,364 @@
+id: macos_tahoe_1_0_0
+title: CIS Apple macOS 26 Tahoe Benchmark
+version: 1.0.0
+target: macos
+beta: true
+description: |
+  CIS Apple macOS 26 (Tahoe) Benchmark v1.0.0. Hardens the local user
+  environment, system services, logging, network configuration,
+  authentication, and bundled applications.
+
+  This benchmark runs on the local machine (when the app itself is on a Mac)
+  or on a remote macOS host reached over SSH. Remote hosts must allow Remote
+  Login (System Settings > General > Sharing > Remote Login), and many checks
+  require sudo on the target.
+
+sections:
+  - id: "1"
+    title: Install Updates, Patches, and Additional Security Software
+    controls:
+      - id: CIS-MACOS-1.1
+        title: Ensure all Apple-provided software is current
+        level: 1
+      - id: CIS-MACOS-1.2
+        title: Ensure auto update is enabled
+        level: 1
+      - id: CIS-MACOS-1.3
+        title: Ensure download new updates when available is enabled
+        level: 1
+      - id: CIS-MACOS-1.4
+        title: Ensure install of macOS updates is enabled
+        level: 1
+      - id: CIS-MACOS-1.5
+        title: Ensure install application updates from the App Store is enabled
+        level: 1
+      - id: CIS-MACOS-1.6
+        title: Ensure install security responses and system files is enabled
+        level: 1
+      - id: CIS-MACOS-1.7
+        title: Audit software inventory periodically
+        level: 2
+        automated: false
+
+  - id: "2"
+    title: System Settings
+    controls:
+      # 2.1 Apple ID / iCloud
+      - id: CIS-MACOS-2.1.1
+        title: Audit Apple Account / iCloud usage
+        level: 2
+        automated: false
+      - id: CIS-MACOS-2.1.2
+        title: Audit App Store password settings
+        level: 2
+        automated: false
+
+      # 2.2 Network
+      - id: CIS-MACOS-2.2.1
+        title: Ensure 'Set time and date automatically' is enabled
+        level: 1
+      - id: CIS-MACOS-2.2.2
+        title: Ensure time is synchronized with an authoritative time server
+        level: 1
+      - id: CIS-MACOS-2.2.3
+        title: Ensure DHCPv6 client is disabled where IPv6 is unused
+        level: 2
+
+      # 2.3 Bluetooth
+      - id: CIS-MACOS-2.3.1
+        title: Ensure Bluetooth is disabled when no paired devices exist
+        level: 1
+      - id: CIS-MACOS-2.3.2
+        title: Show Bluetooth status in menu bar
+        level: 2
+
+      # 2.4 General
+      - id: CIS-MACOS-2.4.1
+        title: Ensure 'AirDrop' is disabled when not in use
+        level: 1
+      - id: CIS-MACOS-2.4.2
+        title: Ensure 'AirPlay Receiver' is disabled
+        level: 1
+      - id: CIS-MACOS-2.4.3
+        title: Ensure 'Handoff' is disabled
+        level: 2
+      - id: CIS-MACOS-2.4.4
+        title: Ensure file sharing is disabled
+        level: 1
+      - id: CIS-MACOS-2.4.5
+        title: Ensure printer sharing is disabled
+        level: 1
+      - id: CIS-MACOS-2.4.6
+        title: Ensure remote login (SSH) is disabled
+        level: 1
+      - id: CIS-MACOS-2.4.7
+        title: Ensure remote management (ARD) is disabled
+        level: 1
+      - id: CIS-MACOS-2.4.8
+        title: Ensure remote Apple events is disabled
+        level: 1
+      - id: CIS-MACOS-2.4.9
+        title: Ensure internet sharing is disabled
+        level: 1
+      - id: CIS-MACOS-2.4.10
+        title: Ensure content caching is disabled
+        level: 2
+      - id: CIS-MACOS-2.4.11
+        title: Ensure media sharing is disabled
+        level: 2
+      - id: CIS-MACOS-2.4.12
+        title: Ensure 'Computer Name' does not contain personal information
+        level: 2
+        automated: false
+
+      # 2.5 Privacy & Security
+      - id: CIS-MACOS-2.5.1.1
+        title: Ensure FileVault is enabled
+        level: 1
+      - id: CIS-MACOS-2.5.1.2
+        title: Ensure all user storage APFS volumes are encrypted
+        level: 1
+      - id: CIS-MACOS-2.5.1.3
+        title: Ensure the recovery key is escrowed or kept securely offline
+        level: 2
+        automated: false
+      - id: CIS-MACOS-2.5.2.1
+        title: Ensure firewall is enabled
+        level: 1
+      - id: CIS-MACOS-2.5.2.2
+        title: Ensure firewall stealth mode is enabled
+        level: 1
+      - id: CIS-MACOS-2.5.2.3
+        title: Ensure firewall logging is enabled and configured
+        level: 2
+      - id: CIS-MACOS-2.5.3
+        title: Ensure 'Location Services' is enabled with reviewed permissions
+        level: 2
+        automated: false
+      - id: CIS-MACOS-2.5.4
+        title: Ensure 'Allow accessories to connect' requires user approval
+        level: 1
+      - id: CIS-MACOS-2.5.5
+        title: Ensure 'Lockdown Mode' is enabled where required by policy
+        level: 2
+        automated: false
+      - id: CIS-MACOS-2.5.6
+        title: Ensure Gatekeeper is enabled
+        level: 1
+      - id: CIS-MACOS-2.5.7
+        title: Ensure System Integrity Protection (SIP) is enabled
+        level: 1
+      - id: CIS-MACOS-2.5.8
+        title: Ensure an administrator password is required to access system-wide preferences
+        level: 1
+      - id: CIS-MACOS-2.5.9
+        title: Ensure 'Erase data after 10 failed attempts' is enabled (if applicable)
+        level: 2
+        automated: false
+
+      # 2.6 Apple Intelligence / Siri / privacy toggles
+      - id: CIS-MACOS-2.6.1
+        title: Ensure 'Apple Intelligence' / Genmoji etc. policy reviewed
+        level: 2
+        automated: false
+      - id: CIS-MACOS-2.6.2
+        title: Ensure Siri is disabled when not required by policy
+        level: 2
+
+      # 2.7 Time Machine
+      - id: CIS-MACOS-2.7.1
+        title: Ensure backup is enabled (Time Machine)
+        level: 2
+      - id: CIS-MACOS-2.7.2
+        title: Ensure backups are encrypted
+        level: 1
+      - id: CIS-MACOS-2.7.3
+        title: Ensure off-site backup exists
+        level: 2
+        automated: false
+
+      # 2.8 Energy / Wake on Network Access
+      - id: CIS-MACOS-2.8.1
+        title: Ensure 'Wake for network access' is disabled
+        level: 2
+      - id: CIS-MACOS-2.8.2
+        title: Ensure power nap is disabled
+        level: 2
+
+      # 2.9 Lock Screen
+      - id: CIS-MACOS-2.9.1
+        title: Ensure a screensaver is set with timeout less than or equal to 20 minutes
+        level: 1
+      - id: CIS-MACOS-2.9.2
+        title: Ensure screen lock is enabled immediately after screen saver / display sleep
+        level: 1
+      - id: CIS-MACOS-2.9.3
+        title: Ensure a custom message is set for the login screen
+        level: 2
+      - id: CIS-MACOS-2.9.4
+        title: Ensure login window displays Name and Password rather than user list
+        level: 1
+      - id: CIS-MACOS-2.9.5
+        title: Ensure 'Show password hints' is disabled
+        level: 1
+      - id: CIS-MACOS-2.9.6
+        title: Ensure 'Console' login is disabled
+        level: 2
+
+      # 2.10 Accessibility / VoiceOver
+      - id: CIS-MACOS-2.10.1
+        title: Ensure dictation respects privacy policy
+        level: 2
+        automated: false
+      - id: CIS-MACOS-2.10.2
+        title: Ensure analytics & 'Improve Siri & Dictation' are disabled
+        level: 2
+
+  - id: "3"
+    title: Logging and Auditing
+    controls:
+      - id: CIS-MACOS-3.1
+        title: Ensure security auditing is enabled
+        level: 1
+      - id: CIS-MACOS-3.2
+        title: Ensure security auditing flags are configured per local policy
+        level: 1
+      - id: CIS-MACOS-3.3
+        title: Ensure install.log is retained for at least 365 days
+        level: 1
+      - id: CIS-MACOS-3.4
+        title: Ensure security auditing retention is configured
+        level: 1
+      - id: CIS-MACOS-3.5
+        title: Ensure access to audit records is controlled
+        level: 1
+      - id: CIS-MACOS-3.6
+        title: Ensure firewall logging is enabled
+        level: 1
+      - id: CIS-MACOS-3.7
+        title: Audit remote logging configuration
+        level: 2
+        automated: false
+
+  - id: "4"
+    title: Network Configurations
+    controls:
+      - id: CIS-MACOS-4.1
+        title: Ensure 'Show Wi-Fi status in Menu Bar' is enabled
+        level: 1
+      - id: CIS-MACOS-4.2
+        title: Ensure 'Bonjour advertising' is disabled
+        level: 2
+      - id: CIS-MACOS-4.3
+        title: Ensure HTTP server (Apache) is disabled
+        level: 1
+      - id: CIS-MACOS-4.4
+        title: Ensure NFS server is disabled
+        level: 1
+      - id: CIS-MACOS-4.5
+        title: Ensure SMB server is disabled
+        level: 1
+      - id: CIS-MACOS-4.6
+        title: Ensure FTP server is disabled
+        level: 1
+      - id: CIS-MACOS-4.7
+        title: Ensure IPv6 forwarding is disabled
+        level: 2
+      - id: CIS-MACOS-4.8
+        title: Ensure HTTP unicast / multicast forwarding is disabled
+        level: 2
+
+  - id: "5"
+    title: System Access, Authentication and Authorization
+    controls:
+      - id: CIS-MACOS-5.1.1
+        title: Ensure home folder permissions are 700
+        level: 1
+      - id: CIS-MACOS-5.1.2
+        title: Ensure 'Library' folder permissions are 700
+        level: 1
+      - id: CIS-MACOS-5.1.3
+        title: Ensure no .DS_Store files in user home
+        level: 2
+        automated: false
+      - id: CIS-MACOS-5.1.4
+        title: Ensure system-wide applications have restrictive permissions
+        level: 2
+      - id: CIS-MACOS-5.2.1
+        title: Ensure password account lockout threshold is configured
+        level: 1
+      - id: CIS-MACOS-5.2.2
+        title: Ensure password minimum length is configured (>= 15)
+        level: 1
+      - id: CIS-MACOS-5.2.3
+        title: Ensure complex password is required (alpha+numeric)
+        level: 1
+      - id: CIS-MACOS-5.2.4
+        title: Ensure password age is configured (<= 365 days)
+        level: 1
+      - id: CIS-MACOS-5.2.5
+        title: Ensure password history is configured (>= 15)
+        level: 2
+      - id: CIS-MACOS-5.2.6
+        title: Ensure password hint is not set
+        level: 1
+      - id: CIS-MACOS-5.3
+        title: Ensure 'Sudo' password timeout is configured (timestamp_timeout=0)
+        level: 1
+      - id: CIS-MACOS-5.4
+        title: Ensure CD/DVD root login is disabled
+        level: 2
+      - id: CIS-MACOS-5.5
+        title: Ensure root account is disabled
+        level: 1
+      - id: CIS-MACOS-5.6
+        title: Ensure automatic login is disabled
+        level: 1
+      - id: CIS-MACOS-5.7
+        title: Ensure Touch ID / smart card requires user-presence
+        level: 2
+        automated: false
+      - id: CIS-MACOS-5.8
+        title: Ensure Guest account is disabled
+        level: 1
+      - id: CIS-MACOS-5.9
+        title: Ensure Guest account access to shared folders is disabled
+        level: 1
+      - id: CIS-MACOS-5.10
+        title: Ensure 'Show password fields' option in Login Window is disabled
+        level: 1
+
+  - id: "6"
+    title: Applications
+    controls:
+      - id: CIS-MACOS-6.1.1
+        title: Ensure 'Automatically check for mail rules' settings reviewed
+        level: 2
+        automated: false
+      - id: CIS-MACOS-6.2.1
+        title: Ensure Safari opens 'safe' files automatically is disabled
+        level: 1
+      - id: CIS-MACOS-6.2.2
+        title: Ensure Safari fraudulent website warning is enabled
+        level: 1
+      - id: CIS-MACOS-6.2.3
+        title: Ensure Safari Java is disabled
+        level: 1
+      - id: CIS-MACOS-6.2.4
+        title: Ensure Safari shows full website address
+        level: 1
+      - id: CIS-MACOS-6.2.5
+        title: Ensure Safari prevents cross-site tracking
+        level: 1
+      - id: CIS-MACOS-6.2.6
+        title: Ensure Safari hides IP from trackers
+        level: 1
+      - id: CIS-MACOS-6.2.7
+        title: Ensure 'AutoFill' is disabled in Safari
+        level: 2
+      - id: CIS-MACOS-6.3.1
+        title: Ensure Terminal 'Secure Keyboard Entry' is enabled
+        level: 1
+      - id: CIS-MACOS-6.3.2
+        title: Ensure Terminal closes the window when exiting a shell cleanly
+        level: 2

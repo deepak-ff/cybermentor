@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sec-Benchmarks Report</title>
+<style>
+:root { --bg:#fafbfc; --fg:#1f2933; --muted:#6b7785; --line:#e1e5ea; --accent:#33506b; }
+* { box-sizing: border-box; }
+body { font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+       background: var(--bg); color: var(--fg); margin: 0; padding: 0; line-height: 1.45; }
+header { background: var(--accent); color: #fff; padding: 24px 36px; }
+header h1 { margin: 0 0 6px; font-size: 1.6rem; }
+header .meta { opacity: 0.9; font-size: 0.9rem; }
+main { padding: 24px 36px; max-width: 1200px; margin: 0 auto; }
+.summary-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(180px,1fr)); gap: 12px; margin-bottom: 24px; }
+.tile { background: #fff; border: 1px solid var(--line); border-radius: 6px; padding: 14px; }
+.tile h3 { margin: 0 0 8px; font-size: 0.85rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+.tile .num { font-size: 1.6rem; font-weight: 600; }
+.bench { margin: 32px 0; background: #fff; border: 1px solid var(--line); border-radius: 8px; }
+.bench h2 { margin: 0; padding: 14px 18px; border-bottom: 1px solid var(--line); font-size: 1.15rem; }
+.bench .body { padding: 0 18px 18px; }
+.section { margin-top: 16px; }
+.section h3 { font-size: 1rem; margin: 12px 0 8px; color: var(--accent); }
+table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { background: #f1f4f7; font-weight: 600; }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 999px; color: #fff; font-size: 0.75rem; font-weight: 600; }
+details { margin: 4px 0; }
+details summary { cursor: pointer; }
+.evidence { background: #f6f8fa; border: 1px solid var(--line); padding: 8px 10px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.78rem; white-space: pre-wrap; border-radius: 4px; }
+footer { color: var(--muted); padding: 12px 36px 24px; font-size: 0.8rem; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Sec-Benchmarks Report</h1>
+  <div class="meta">
+    Tool {{ run.tool_version or "dev" }} &middot;
+    Tenant {{ run.tenant_id or "n/a" }} &middot;
+    {{ run.subscription_ids|length }} subscription(s) &middot;
+    {{ run.profile or "" }}
+    {% if run.finished_at %} &middot; finished {{ run.finished_at.isoformat() }}{% endif %}
+  </div>
+</header>
+<main>
+{% set summary = run.summary() %}
+<div class="summary-grid">
+  {% for bench in run.benchmarks %}
+  <div class="tile">
+    <h3>{{ bench.title }}<br>{{ bench.version }}</h3>
+    {% set s = summary.get(bench.id, {}) %}
+    <div class="num">
+      <span style="color:#1f9d55">{{ s.get('pass', 0) }}</span> /
+      <span style="color:#cc1f1a">{{ s.get('fail', 0) }}</span> /
+      <span style="color:#b08900">{{ s.get('manual', 0) }}</span>
+    </div>
+    <div style="font-size:0.75rem;color:var(--muted);margin-top:4px;">pass / fail / manual</div>
+  </div>
+  {% endfor %}
+</div>
+
+{% for bench in run.benchmarks %}
+<section class="bench">
+  <h2>{{ bench.title }} <span style="color:var(--muted);font-weight:400;">({{ bench.version }})</span></h2>
+  <div class="body">
+    {% set s = summary.get(bench.id, {}) %}
+    <p style="color:var(--muted);font-size:0.9rem;">
+      {% for st in statuses %}
+        <span class="badge" style="background: {{ st.value | status_color }}; margin-right: 4px;">
+          {{ st.value | status_label }}: {{ s.get(st.value, 0) }}
+        </span>
+      {% endfor %}
+    </p>
+    {% set results = run.results.get(bench.id, []) %}
+    {% for sec in bench.sections %}
+      {% set sec_results = results | selectattr("control_id", "in", sec.controls | map(attribute="id") | list) | list %}
+      {% if sec_results %}
+      <div class="section">
+        <h3>{{ sec.id }} &mdash; {{ sec.title }}</h3>
+        <table>
+          <thead><tr><th>Control</th><th>Level</th><th>Status</th><th>Summary / Evidence</th></tr></thead>
+          <tbody>
+          {% for r in sec_results %}
+            {% set meta = by_id.get(r.control_id, {}) %}
+            <tr>
+              <td><strong>{{ r.control_id }}</strong><br><span style="color:var(--muted);">{{ meta.title or '' }}</span></td>
+              <td>{{ meta.level or '' }}</td>
+              <td><span class="badge" style="background: {{ r.status.value | status_color }};">{{ r.status.value | status_label }}</span></td>
+              <td>
+                {{ r.summary }}
+                {% if r.evidence %}
+                <details><summary>Evidence ({{ r.evidence | length }})</summary>
+                  <div class="evidence">{{ r.evidence | tojson(indent=2) }}</div>
+                </details>
+                {% endif %}
+                {% if r.error %}<div style="color:#7c2ae8;font-size:0.8rem;margin-top:4px;">{{ r.error }}</div>{% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+</section>
+{% endfor %}
+</main>
+<footer>
+  Sec-Benchmarks is an independent informational tool. CIS Benchmarks are trademarks of the
+  Center for Internet Security. Refer to the official benchmark PDFs for authoritative
+  audit and remediation guidance.
+</footer>
+</body>
+</html>

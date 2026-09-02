@@ -1,0 +1,312 @@
+id: azure_compute_win_server_2022_1_0_0
+title: CIS Microsoft Azure Compute Microsoft Windows Server 2022 Benchmark
+version: 1.0.0
+target: windows
+description: 'CIS Microsoft Azure Compute Windows Server 2022 Benchmark v1.0.0. A focused hardening subset for Windows Server
+  2022 virtual machines running on Microsoft Azure. Local disk encryption is delegated to Azure Disk Encryption and AppLocker
+  controls are out of scope.
+
+  '
+sections:
+- id: '1'
+  title: Account Policies
+  controls:
+  - id: CIS-AZWS22-1.1.1
+    title: Ensure 'Enforce password history' is set to '24 or more password(s)'
+    level: 1
+  - id: CIS-AZWS22-1.1.2
+    title: Ensure 'Maximum password age' is set to '365 or fewer days, but not 0'
+    level: 1
+  - id: CIS-AZWS22-1.1.3
+    title: Ensure 'Minimum password age' is set to '1 or more day(s)'
+    level: 1
+  - id: CIS-AZWS22-1.1.4
+    title: Ensure 'Minimum password length' is set to '14 or more character(s)'
+    level: 1
+  - id: CIS-AZWS22-1.1.5
+    title: Ensure 'Password must meet complexity requirements' is set to 'Enabled'
+    level: 1
+  - id: CIS-AZWS22-1.1.6
+    title: Ensure 'Store passwords using reversible encryption' is set to 'Disabled'
+    level: 1
+  - id: CIS-AZWS22-1.2.1
+    title: Ensure 'Account lockout duration' is set to '15 or more minute(s)'
+    level: 1
+  - id: CIS-AZWS22-1.2.2
+    title: Ensure 'Account lockout threshold' is set to '5 or fewer invalid logon attempt(s)'
+    level: 1
+  - id: CIS-AZWS22-1.2.3
+    title: Ensure 'Reset account lockout counter after' is set to '15 or more minute(s)'
+    level: 1
+- id: '2'
+  title: Local Policies / Security Options
+  controls:
+  - id: CIS-AZWS22-2.3.1.1
+    title: 'Ensure ''Accounts: Block Microsoft accounts'' is enforced'
+    level: 1
+  - id: CIS-AZWS22-2.3.1.2
+    title: 'Ensure ''Accounts: Guest account status'' is ''Disabled'''
+    level: 1
+  - id: CIS-AZWS22-2.3.1.3
+    title: 'Ensure ''Accounts: Limit local account use of blank passwords to console logon only'' is ''Enabled'''
+    level: 1
+  - id: CIS-AZWS22-2.3.1.4
+    title: 'Ensure ''Accounts: Rename administrator account'' is configured'
+    level: 1
+  - id: CIS-AZWS22-2.3.7.1
+    title: 'Ensure ''Interactive logon: Do not require CTRL+ALT+DEL'' is ''Disabled'''
+    level: 1
+  - id: CIS-AZWS22-2.3.7.2
+    title: 'Ensure ''Interactive logon: Don''t display last signed-in'' is ''Enabled'''
+    level: 1
+  - id: CIS-AZWS22-2.3.7.3
+    title: 'Ensure ''Interactive logon: Machine inactivity limit'' is ''900 or fewer second(s), but not 0'''
+    level: 1
+  - id: CIS-AZWS22-2.3.9.1
+    title: 'Ensure ''Microsoft network server: Digitally sign communications (always)'' is ''Enabled'''
+    level: 1
+  - id: CIS-AZWS22-2.3.9.2
+    title: 'Ensure ''Microsoft network server: Disconnect clients when logon hours expire'' is ''Enabled'''
+    level: 1
+  - id: CIS-AZWS22-2.3.9.3
+    title: 'Ensure ''Microsoft network server: Server SPN target name validation level'' is configured'
+    level: 1
+  - id: CIS-AZWS22-2.3.10.1
+    title: 'Ensure ''Network access: Allow anonymous SID/Name translation'' is ''Disabled'''
+    level: 1
+  - id: CIS-AZWS22-2.3.10.2
+    title: 'Ensure ''Network access: Do not allow anonymous enumeration of SAM accounts'' is ''Enabled'''
+    level: 1
+  - id: CIS-AZWS22-2.3.10.3
+    title: 'Ensure ''Network access: Do not allow anonymous enumeration of SAM accounts and shares'' is ''Enabled'''
+    level: 1
+  - id: CIS-AZWS22-2.3.10.4
+    title: 'Ensure ''Network access: Restrict anonymous access to Named Pipes and Shares'' is ''Enabled'''
+    level: 1
+  - id: CIS-AZWS22-2.3.10.5
+    title: 'Ensure ''Network access: Sharing and security model for local accounts'' is ''Classic'''
+    level: 1
+  - id: CIS-AZWS22-2.3.11.1
+    title: 'Ensure ''Network security: Allow LocalSystem NULL session fallback'' is ''Disabled'''
+    level: 1
+  - id: CIS-AZWS22-2.3.11.2
+    title: 'Ensure ''Network security: Do not store LAN Manager hash value on next password change'' is ''Enabled'''
+    level: 1
+  - id: CIS-AZWS22-2.3.11.3
+    title: 'Ensure ''Network security: LAN Manager authentication level'' is ''Send NTLMv2 response only. Refuse LM & NTLM'''
+    level: 1
+  - id: CIS-AZWS22-2.3.11.4
+    title: 'Ensure ''Network security: Minimum session security for NTLM SSP based clients'' is configured'
+    level: 1
+  - id: CIS-AZWS22-2.3.11.5
+    title: 'Ensure ''Network security: Minimum session security for NTLM SSP based servers'' is configured'
+    level: 1
+  - id: CIS-AZWS22-2.3.17.1
+    title: 'Ensure ''User Account Control: Admin Approval Mode for the Built-in Administrator account'' is ''Enabled'''
+    level: 1
+  - id: CIS-AZWS22-2.3.17.2
+    title: 'Ensure ''User Account Control: Behavior of the elevation prompt for administrators in Admin Approval Mode'' is
+      configured'
+    level: 1
+  - id: CIS-AZWS22-2.3.17.3
+    title: 'Ensure ''User Account Control: Behavior of the elevation prompt for standard users'' is ''Automatically deny elevation
+      requests'''
+    level: 1
+  - id: CIS-AZWS22-2.3.17.4
+    title: 'Ensure ''User Account Control: Detect application installations and prompt for elevation'' is ''Enabled'''
+    level: 1
+  - id: CIS-AZWS22-2.3.17.5
+    title: 'Ensure ''User Account Control: Run all administrators in Admin Approval Mode'' is ''Enabled'''
+    level: 1
+  - id: CIS-AZWS22-2.3.17.6
+    title: 'Ensure ''User Account Control: Virtualize file and registry write failures to per-user locations'' is ''Enabled'''
+    level: 1
+- id: '5'
+  title: System Services
+  controls:
+  - id: CIS-AZWS22-5.1
+    title: Ensure 'Computer Browser (Browser)' is 'Disabled' or not present
+    level: 1
+  - id: CIS-AZWS22-5.2
+    title: Ensure 'IIS Admin Service (IISADMIN)' is 'Disabled' or not present
+    level: 1
+  - id: CIS-AZWS22-5.3
+    title: Ensure 'Internet Connection Sharing (SharedAccess)' is 'Disabled'
+    level: 1
+  - id: CIS-AZWS22-5.4
+    title: Ensure 'Print Spooler (Spooler)' is 'Disabled' (where not required)
+    level: 1
+  - id: CIS-AZWS22-5.5
+    title: Ensure 'Remote Procedure Call (RPC) Locator (RpcLocator)' is 'Disabled'
+    level: 1
+  - id: CIS-AZWS22-5.6
+    title: Ensure 'Remote Registry (RemoteRegistry)' is 'Disabled' (or required-only)
+    level: 1
+  - id: CIS-AZWS22-5.7
+    title: Ensure 'Routing and Remote Access (RemoteAccess)' is 'Disabled'
+    level: 1
+  - id: CIS-AZWS22-5.8
+    title: Ensure 'Simple TCP/IP Services (simptcp)' is 'Disabled' or not present
+    level: 1
+  - id: CIS-AZWS22-5.9
+    title: Ensure 'SNMP (SNMP)' is 'Disabled' or not present
+    level: 1
+  - id: CIS-AZWS22-5.10
+    title: Ensure 'WebClient (WebClient)' is 'Disabled'
+    level: 1
+  - id: CIS-AZWS22-5.11
+    title: Ensure 'Xbox Accessory Management Service (XboxGipSvc)' is 'Disabled' or not present
+    level: 1
+- id: '9'
+  title: Windows Defender Firewall
+  controls:
+  - id: CIS-AZWS22-9.1.1
+    title: 'Ensure ''Windows Firewall: Domain: Firewall state'' is ''On'''
+    level: 1
+  - id: CIS-AZWS22-9.1.2
+    title: 'Ensure ''Windows Firewall: Domain: Inbound connections'' is ''Block'''
+    level: 1
+  - id: CIS-AZWS22-9.2.1
+    title: 'Ensure ''Windows Firewall: Private: Firewall state'' is ''On'''
+    level: 1
+  - id: CIS-AZWS22-9.2.2
+    title: 'Ensure ''Windows Firewall: Private: Inbound connections'' is ''Block'''
+    level: 1
+  - id: CIS-AZWS22-9.3.1
+    title: 'Ensure ''Windows Firewall: Public: Firewall state'' is ''On'''
+    level: 1
+  - id: CIS-AZWS22-9.3.2
+    title: 'Ensure ''Windows Firewall: Public: Inbound connections'' is ''Block'''
+    level: 1
+- id: '17'
+  title: Advanced Audit Policy Configuration
+  controls:
+  - id: CIS-AZWS22-17.1.1
+    title: Ensure 'Audit Credential Validation' is set to 'Success and Failure'
+    level: 1
+  - id: CIS-AZWS22-17.2.1
+    title: Ensure 'Audit Application Group Management' is set to 'Success and Failure'
+    level: 1
+  - id: CIS-AZWS22-17.3.1
+    title: Ensure 'Audit PNP Activity' is set to 'Success'
+    level: 1
+  - id: CIS-AZWS22-17.3.2
+    title: Ensure 'Audit Process Creation' is set to 'Success'
+    level: 1
+  - id: CIS-AZWS22-17.5.1
+    title: Ensure 'Audit Account Lockout' is set to 'Success and Failure'
+    level: 1
+  - id: CIS-AZWS22-17.5.2
+    title: Ensure 'Audit Group Membership' is set to 'Success'
+    level: 1
+  - id: CIS-AZWS22-17.5.3
+    title: Ensure 'Audit Logoff' is set to 'Success'
+    level: 1
+  - id: CIS-AZWS22-17.5.4
+    title: Ensure 'Audit Logon' is set to 'Success and Failure'
+    level: 1
+  - id: CIS-AZWS22-17.5.5
+    title: Ensure 'Audit Special Logon' is set to 'Success'
+    level: 1
+  - id: CIS-AZWS22-17.6.1
+    title: Ensure 'Audit Detailed File Share' is set to 'Failure'
+    level: 1
+  - id: CIS-AZWS22-17.6.2
+    title: Ensure 'Audit File Share' is set to 'Success and Failure'
+    level: 1
+  - id: CIS-AZWS22-17.6.3
+    title: Ensure 'Audit Other Object Access Events' is set to 'Success and Failure'
+    level: 1
+  - id: CIS-AZWS22-17.6.4
+    title: Ensure 'Audit Removable Storage' is set to 'Success and Failure'
+    level: 1
+  - id: CIS-AZWS22-17.7.1
+    title: Ensure 'Audit Audit Policy Change' is set to 'Success and Failure'
+    level: 1
+  - id: CIS-AZWS22-17.7.2
+    title: Ensure 'Audit Authentication Policy Change' is set to 'Success'
+    level: 1
+  - id: CIS-AZWS22-17.7.3
+    title: Ensure 'Audit MPSSVC Rule-Level Policy Change' is set to 'Success and Failure'
+    level: 1
+  - id: CIS-AZWS22-17.8.1
+    title: Ensure 'Audit Sensitive Privilege Use' is set to 'Success and Failure'
+    level: 1
+  - id: CIS-AZWS22-17.9.1
+    title: Ensure 'Audit IPsec Driver' is set to 'Success and Failure'
+    level: 1
+  - id: CIS-AZWS22-17.9.2
+    title: Ensure 'Audit Other System Events' is set to 'Success and Failure'
+    level: 1
+  - id: CIS-AZWS22-17.9.3
+    title: Ensure 'Audit Security State Change' is set to 'Success'
+    level: 1
+  - id: CIS-AZWS22-17.9.4
+    title: Ensure 'Audit Security System Extension' is set to 'Success'
+    level: 1
+  - id: CIS-AZWS22-17.9.5
+    title: Ensure 'Audit System Integrity' is set to 'Success and Failure'
+    level: 1
+- id: '18'
+  title: Computer Configuration / Administrative Templates
+  controls:
+  - id: CIS-AZWS22-18.1.1
+    title: Ensure 'Prevent enabling lock screen camera' is 'Enabled'
+    level: 1
+  - id: CIS-AZWS22-18.1.2
+    title: Ensure 'Prevent enabling lock screen slide show' is 'Enabled'
+    level: 1
+  - id: CIS-AZWS22-18.3.1
+    title: Ensure 'Apply UAC restrictions to local accounts on network logons' is 'Enabled'
+    level: 1
+  - id: CIS-AZWS22-18.3.2
+    title: Ensure 'Configure SMBv1 client driver' is 'Disabled'
+    level: 1
+  - id: CIS-AZWS22-18.3.3
+    title: Ensure 'Configure SMBv1 server' is 'Disabled'
+    level: 1
+  - id: CIS-AZWS22-18.4.1
+    title: Ensure 'WDigest Authentication' is 'Disabled'
+    level: 1
+  - id: CIS-AZWS22-18.9.45.1
+    title: Ensure 'Turn off Microsoft Defender AntiVirus' is 'Disabled'
+    level: 1
+  - id: CIS-AZWS22-18.9.108.1
+    title: Ensure 'No auto-restart with logged on users for scheduled automatic updates' is 'Disabled'
+    level: 1
+  - id: CIS-AZWS22-18.9.108.2
+    title: Ensure 'Configure Automatic Updates' is 'Enabled'
+    level: 1
+  - id: CIS-AZWS22-18.9.108.3
+    title: 'Ensure ''Configure Automatic Updates: Scheduled install day'' is configured'
+    level: 1
+  - id: CIS-AZWS22-18.10.1
+    title: Ensure 'Disallow Autoplay for non-volume devices' is 'Enabled'
+    level: 1
+  - id: CIS-AZWS22-18.10.2
+    title: 'Ensure ''Set the default behavior for AutoRun'' is ''Enabled: Do not execute any autorun commands'''
+    level: 1
+  - id: CIS-AZWS22-18.10.3
+    title: 'Ensure ''Turn off Autoplay'' is ''Enabled: All drives'''
+    level: 1
+  - id: CIS-AZWS22-18.SVR.1
+    title: Ensure 'Always prompt for password upon connection' (RDP)
+    level: 1
+  - id: CIS-AZWS22-18.SVR.2
+    title: Ensure 'Require secure RPC communication' (RDP)
+    level: 1
+  - id: CIS-AZWS22-18.SVR.3
+    title: Ensure RDP minimum encryption level is High or higher
+    level: 1
+  - id: CIS-AZWS22-18.SVR.4
+    title: Ensure RDP user authentication (NLA) is enabled
+    level: 1
+- id: '19'
+  title: User Configuration / Administrative Templates
+  controls:
+  - id: CIS-AZWS22-19.1.1
+    title: Ensure 'Password protect the screen saver' is 'Enabled'
+    level: 1
+  - id: CIS-AZWS22-19.1.2
+    title: Ensure 'Screen saver timeout' is set to '900 seconds or fewer, not 0'
+    level: 1
