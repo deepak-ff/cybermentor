@@ -1,218 +1,124 @@
-# SecBench
+# security-audit-tool
 
-SecBench is a cross-platform desktop application (Windows / macOS / Linux) that
-authenticates to an Azure tenant, a Microsoft 365 organisation, or any reachable
-host (local, SSH-Linux, SSH-macOS, SSH-Windows) and runs CIS / STIG benchmarks
-against them, producing HTML, JSON, CSV, and PDF reports.
+A non-intrusive, **Read-Only** host security auditing tool written in **pure
+Python (standard library only — no third-party dependencies)**.
 
-The engine ships with **24 benchmarks** and over **2,200 automated controls** out
-of ~2,600 total. Sources of truth for the control text remain the official CIS
-Benchmark and DISA STIG PDFs; SecBench reproduces only the control identifiers
-and short factual titles.
+It performs two jobs:
 
-> SecBench is an independent, informational tool. It is **not** affiliated with,
-> sponsored by, or endorsed by the Center for Internet Security (CIS) or the
-> Defense Information Systems Agency (DISA). Authoritative control text and
-> audit guidance live in the official benchmark / STIG documents at
-> <https://www.cisecurity.org/cis-benchmarks/> and
-> <https://public.cyber.mil/stigs/>. Use this tool as an aid; do not treat its
-> output as a certified attestation.
+1. **Configuration audit** — runs **24+ CIS Benchmark-aligned checks** across
+   SSH, file permissions, authentication policy, firewalls, kernel hardening,
+   logging, and network settings. It reports each as **PASS / WARN / FAIL /
+   INFO / SKIP** and computes a **0–100 hardening score**.
+2. **Multithreaded TCP port scanner** — scans port ranges concurrently using a
+   bounded thread pool, which dramatically reduces scan time on real networks
+   where most ports are filtered and time out.
 
-## Bundled benchmarks
+It produces two reports from a single run so they always agree:
+- **Structured JSON** (machine-readable, easy to feed into other tooling)
+- **Self-contained HTML dashboard** (single file, inline CSS, human-readable)
 
-The Connect screen groups benchmarks into **Cloud** (Azure / M365) and
-**Infrastructure** (host-based). Numbers are *automated controls / total
-controls in the catalog*; the rest are flagged as Manual review.
+> The tool is intentionally **non-intrusive**: like the well-known open-source
+> tool [Lynis](https://github.com/CISOfy/lynis), it only reads configuration and
+> permissions and **never modifies the system** it inspects.
 
-### Cloud (Azure / M365)
+---
 
-| Benchmark | Version | Target | Coverage |
-|---|---|---|---:|
-| CIS Microsoft Azure Foundations Benchmark | 6.0.0 | `azure` | 143 / 159 |
-| CIS Microsoft Azure Compute Services Benchmark | 2.0.0 | `azure` | 13 / 74 |
-| CIS Microsoft Azure Database Services Benchmark | 2.0.0 | `azure` | 16 / 62 |
-| CIS Microsoft Azure Storage Services Benchmark | 1.0.0 | `azure` | 15 / 40 |
-| CIS Microsoft 365 Foundations Benchmark | 6.0.1 | `m365` | 11 / 137 |
+## Quick start
 
-### Infrastructure - macOS
-
-| Benchmark | Version | Target | Coverage |
-|---|---|---|---:|
-| CIS Apple macOS 26 Tahoe Benchmark | 1.0.0 | `macos` | 82 / 97 |
-
-### Infrastructure - Red Hat Enterprise Linux (CIS + STIG)
-
-| Benchmark | Version | Target | Coverage |
-|---|---|---|---:|
-| CIS Red Hat Enterprise Linux 10 Benchmark | 1.0.1 | `rhel` | 166 / 186 |
-| CIS Red Hat Enterprise Linux 9 Benchmark | 2.0.0 | `rhel` | 165 / 196 |
-| CIS Red Hat Enterprise Linux 9 STIG Benchmark | 1.0.0 | `rhel` | 123 / 126 |
-| CIS Red Hat Enterprise Linux 8 Benchmark | 4.0.0 | `rhel` | 165 / 182 |
-| CIS Red Hat Enterprise Linux 8 STIG Benchmark | 2.0.0 | `rhel` | 123 / 125 |
-
-### Infrastructure - Microsoft Windows / Defender / Windows Server
-
-| Benchmark | Version | Target | Coverage |
-|---|---|---|---:|
-| CIS Microsoft Defender Antivirus Benchmark | 1.0.0 | `windows` | 26 / 39 |
-| CIS Microsoft Windows 11 Enterprise Benchmark | 5.0.1 | `windows` | 109 / 119 |
-| CIS Microsoft Windows 11 Stand-alone Benchmark | 5.0.0 | `windows` | 95 / 99 |
-| CIS Microsoft Azure Compute Microsoft Windows Server 2022 Benchmark | 1.0.0 | `windows` | 93 / 93 |
-| CIS Microsoft Azure Compute Microsoft Windows Server 2019 Benchmark | 1.0.0 | `windows` | 93 / 93 |
-| CIS Microsoft Windows Server 2025 Benchmark | 2.0.0 | `windows` | 99 / 99 |
-| CIS Microsoft Windows Server 2025 Stand-alone Benchmark | 1.0.0 | `windows` | 93 / 93 |
-| CIS Microsoft Windows Server 2022 Benchmark | 5.0.0 | `windows` | 99 / 99 |
-| CIS Microsoft Windows Server 2022 Stand-alone Benchmark | 2.0.0 | `windows` | 93 / 93 |
-| CIS Microsoft Windows Server 2022 STIG Benchmark | 2.0.0 | `windows` | 109 / 109 |
-| CIS Microsoft Windows Server 2019 Benchmark | 4.0.0 | `windows` | 99 / 99 |
-| CIS Microsoft Windows Server 2019 Stand-alone Benchmark | 3.0.0 | `windows` | 93 / 93 |
-| CIS Microsoft Windows Server 2019 STIG Benchmark | 3.0.0 | `windows` | 109 / 109 |
-
-## Quick start (running from source)
+No dependencies to install:
 
 ```bash
-python -m venv .venv
-source .venv/bin/activate          # Windows: .venv\Scripts\activate
-pip install -e ".[dev]"
-secbench-gui                        # launch the desktop UI
-secbench --list                     # CLI: list benchmarks
+python3 -m audit_tool --host 127.0.0.1 --ports 1-1024 --threads 256 --out reports
 ```
 
-## Authentication and target setup
+Example output:
 
-The Connect screen is split into two tabs:
+```
+[*] Running configuration checks ...
+[*] Scanning 127.0.0.1:1-1024 (threads=256) ...
+[*] Port scan complete in 131 ms; 2 open port(s).
 
-### Cloud tab (Azure / M365)
-
-1. **Interactive browser** sign-in (recommended for desktop use).
-2. **Device code** flow (useful over SSH / headless).
-3. **Service principal** (client ID + secret or certificate).
-
-Required minimum permissions:
-
-- Azure: `Reader` on every subscription you want to evaluate, plus
-  `Security Reader` for Defender for Cloud controls.
-- Microsoft Graph: `Directory.Read.All`, `Policy.Read.All`,
-  `Reports.Read.All`, `SecurityEvents.Read.All`,
-  `RoleManagement.Read.Directory`, `Application.Read.All`,
-  `AuditLog.Read.All`.
-
-### Infrastructure tab
-
-Configure a single OS target shared by every host-based benchmark
-(macOS Tahoe, all RHEL profiles, every Windows profile and
-Defender AV):
-
-- **Local computer** - runs commands on the same machine the GUI is on
-  (available on macOS, Linux, and Windows hosts).
-- **SSH** - connects to a remote macOS / Linux / Windows host with
-  optional `sudo` elevation. The "Test target" button auto-detects the
-  remote OS via `uname -a` (POSIX) or `cmd /c ver` (Windows).
-
-### Windows elevation
-
-When the GUI runs on Windows **without administrator rights**, a yellow
-banner appears at the bottom of the window. Many local Windows checks
-(`secedit /export`, `auditpol`, `Get-MpPreference`, BitLocker, privileged
-registry keys) require admin rights and will otherwise return MANUAL or
-FAIL. The **Restart as administrator** button re-launches SecBench
-elevated via a UAC prompt; if anything goes wrong, a diagnostic log is
-written to `%TEMP%\secbench_elevation.log`.
-
-## Reports
-
-After a run completes, use the Reports page to export:
-
-- Interactive **HTML** (Jinja2-rendered, self-contained).
-- Machine-readable **JSON**.
-- Flat **CSV** (one row per control).
-- **PDF** (rendered via WeasyPrint where available, falling back to ReportLab).
-
-## Building standalone binaries
-
-The packaging scripts produce real, **standalone** binaries via PyInstaller -
-no Python install required on the target machine. PyInstaller cannot
-cross-compile, so each script must be run on its target OS.
-
-### Windows
-
-```powershell
-# One-folder bundle (default; faster startup):
-.\packaging\build_windows.ps1
-# Output:  dist\SecBench\SecBench.exe  (+ supporting DLLs / data in same folder)
-
-# Single self-extracting .exe (slower first launch, easiest to ship):
-.\packaging\build_windows.ps1 -OneFile
-# Output:  dist\SecBench.exe
-
-# Skip pip install if your venv is already set up:
-.\packaging\build_windows.ps1 -SkipInstall
+[+] Hardening score: 43/100
+[+] Summary: PASS: 8, WARN: 4, FAIL: 6, INFO: 5, SKIP: 1
+[+] JSON report : reports/audit_127.0.0.1_20260903_132307.json
+[+] HTML report : reports/audit_127.0.0.1_20260903_132307.html
 ```
 
-### macOS
+### Options
+
+| Flag | Description |
+|---|---|
+| `--host` | Host to port-scan (default `127.0.0.1`) |
+| `--ports` | Port range/list, e.g. `80` or `1-1024` (default `1-1024`) |
+| `--timeout` | Socket connect timeout in seconds (default `1.0`) |
+| `--threads` | Number of scanning threads (default `256`) |
+| `--skip-scan` | Run configuration checks only |
+| `--show-speedup` | Compare concurrent vs sequential scanning timings |
+| `--out` | Output directory for reports (default `reports`) |
+| `--hostname` | Label used in the report (default `localhost`) |
+
+### Comparing concurrent vs sequential scanning
 
 ```bash
-# One-folder bundle + .app:
-./packaging/build_macos.sh
-# Outputs:  dist/SecBench/SecBench  and  dist/SecBench.app
-
-# Single Mach-O binary:
-SECBENCH_ONEFILE=1 ./packaging/build_macos.sh
-# Output:  dist/SecBench
-
-# Skip pip install:
-SECBENCH_SKIP_INSTALL=1 ./packaging/build_macos.sh
+python3 -m audit_tool --host <target> --ports 1-2000 --show-speedup
 ```
 
-### Linux
+The tool prints both the sequential and concurrent timings. **Where the
+speed-up appears:** on networks (or hosts) where closed ports are *filtered and
+time out*, sequential scanning waits the full timeout for each port, whereas
+the thread pool overlaps those waits. On `localhost` closed ports are *refused
+instantly*, so there is little to parallelize and timings can look similar —
+that's expected, not a defect. On real targets the improvement scales roughly
+with the thread count.
 
-```bash
-# One-folder bundle:
-./packaging/build_linux.sh
-# Output:  dist/SecBench/SecBench
+---
 
-# Single ELF binary:
-SECBENCH_ONEFILE=1 ./packaging/build_linux.sh
-# Output:  dist/SecBench
+## Checks included (24+)
+
+- **SSH** — `PermitRootLogin`, `PasswordAuthentication`, `PermitEmptyPasswords`,
+  `sshd_config` permissions
+- **Filesystem** — world-writable files/dirs, `/etc/passwd` & `/etc/shadow`
+  modes, sticky bit on `/tmp`/`/var/tmp`, SUID/SGID inventory, `/tmp` filesystem
+- **Authentication** — password aging (`PASS_MAX_DAYS`), `UMASK`, empty
+  password entries, `sudoers` permissions
+- **Firewall / Network** — host firewall active, `ip_forward`, ICMP redirects,
+  listening ports inventory
+- **Kernel** — `kptr_restrict`, core dumps, ASLR (`randomize_va_space`)
+- **Logging** — `auditd`, `rsyslog`
+
+Each check returns a `CheckResult` with its **CIS reference** so findings can be
+traced to the relevant benchmark.
+
+---
+
+## How it works
+
+```
+audit_tool/
+  cli.py        # argument parsing + orchestration
+  checks.py     # check registry + each CIS-aligned check (all read-only)
+  scanner.py    # multithreaded TCP port scanner
+  reporter.py   # JSON + HTML report writers
+  models.py     # CheckResult / ScanResult dataclasses + scoring
 ```
 
-The PyInstaller spec lives at `packaging/pyinstaller-secbench.spec`. Optional
-icons can be placed at `packaging/icons/icon.ico` (Windows), `icon.icns`
-(macOS); they are picked up automatically when present.
+- `checks.py` uses a small `@register` decorator so new checks are easy to add.
+- `scanner.py` scans ports in **bounded batches** so even `1-65535` does not
+  spawn an unbounded number of simultaneous sockets.
+- All checks are wrapped so a single failing check never aborts the whole audit.
 
-To distribute a build, zip the `dist/SecBench/` folder (one-folder mode) or
-ship the single binary (one-file mode). End users do **not** need Python
-installed.
+---
 
-## Project layout
+## Roadmap / possible additions
 
-```
-src/secbench/
-  app.py              # GUI entry point (also -m secbench)
-  cli.py              # CLI entry point
-  elevation.py        # Windows admin-detect + UAC self-relaunch
-  config.py           # Settings persistence
-  auth/               # Interactive / device-code / service-principal sign-in
-  azure_client/       # Azure SDK wrappers + response cache
-  benchmarks/         # YAML catalogs + Python checks per benchmark
-    _linux_common/    # Shared RHEL helpers (rpm, systemd, sshd, sysctl, ...)
-    _windows_common/  # Shared Windows helpers (registry, secedit, auditpol,
-                      #   Get-MpPreference, firewall, services, ...)
-    azure_*/, m365_*/, macos_*/, rhel_*/, windows_*/, win_server_*/, defender_*
-  engine/             # Runner, registry, catalog loader, progress events
-  gui/                # PyQt6 pages: Connect / Benchmarks / Run / Results / Reports
-  reports/            # HTML / JSON / CSV / PDF generators + Jinja2 templates
-  targets/            # LocalTarget, SshTarget abstractions
-packaging/            # PyInstaller spec + per-OS build scripts
-tests/                # pytest catalog + engine tests
-```
+- `--json` / `--csv` report formats
+- Check categories selection (`--only SSH,kernel`)
+- Remote host checks over SSH (reusing a user-supplied key)
+- Baseline/diff mode to compare two runs
+- CI-friendly exit codes (non-zero when `FAIL` present)
 
-## Disclaimer
+---
 
-The CIS Benchmark trademarks are property of the Center for Internet Security.
-The DISA STIG documents are produced by the U.S. Defense Information Systems
-Agency. SecBench reproduces only short, factual references to control
-identifiers and section titles; full audit/remediation prose remains under
-the original copyright and is intentionally summarized rather than verbatim.
-Always consult the official benchmark / STIG documents for authoritative
-guidance.
+## License
+
+MIT — free to use, modify, and extend.

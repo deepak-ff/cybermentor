@@ -1,0 +1,4 @@
+# security-audit-tool uses ONLY the Python standard library.
+# No third-party dependencies are required to install or run it.
+#
+# Python 3.8+ is sufficient.
