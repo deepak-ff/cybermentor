@@ -1,0 +1,9 @@
+{
+  "host": "baseline",
+  "started_at": "2026-09-03T00:00:00",
+  "finished_at": "2026-09-03T00:00:01",
+  "duration_ms": 1,
+  "checks": [],
+  "open_ports": [],
+  "scan_targets": {}
+}

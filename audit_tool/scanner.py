@@ -4,6 +4,7 @@ Scanning a large port range sequentially is slow because almost every port
 times out. By scanning concurrently with a bounded thread pool we overlap the
 waits, giving a substantial speed-up (typically ~10x on real networks).
 """
+
 from __future__ import annotations
 
 import socket
@@ -13,14 +14,40 @@ from typing import List, Optional, Sequence
 
 # Common service names to enrich results (IANA-ish).
 SERVICE_NAMES = {
-    21: "ftp", 22: "ssh", 23: "telnet", 25: "smtp", 53: "dns",
-    80: "http", 110: "pop3", 111: "rpcbind", 135: "msrpc", 139: "netbios-ssn",
-    143: "imap", 389: "ldap", 443: "https", 445: "microsoft-ds",
-    465: "smtps", 514: "syslog", 587: "submission", 631: "ipp",
-    993: "imaps", 995: "pop3s", 1080: "socks", 1433: "mssql", 1521: "oracle",
-    2049: "nfs", 3306: "mysql", 3389: "rdp", 5432: "postgresql",
-    5900: "vnc", 6379: "redis", 8080: "http-alt", 8443: "https-alt",
-    8888: "http-alt", 9200: "elasticsearch", 27017: "mongodb",
+    21: "ftp",
+    22: "ssh",
+    23: "telnet",
+    25: "smtp",
+    53: "dns",
+    80: "http",
+    110: "pop3",
+    111: "rpcbind",
+    135: "msrpc",
+    139: "netbios-ssn",
+    143: "imap",
+    389: "ldap",
+    443: "https",
+    445: "microsoft-ds",
+    465: "smtps",
+    514: "syslog",
+    587: "submission",
+    631: "ipp",
+    993: "imaps",
+    995: "pop3s",
+    1080: "socks",
+    1433: "mssql",
+    1521: "oracle",
+    2049: "nfs",
+    3306: "mysql",
+    3389: "rdp",
+    5432: "postgresql",
+    5900: "vnc",
+    6379: "redis",
+    8080: "http-alt",
+    8443: "https-alt",
+    8888: "http-alt",
+    9200: "elasticsearch",
+    27017: "mongodb",
 }
 
 
@@ -70,7 +97,9 @@ def scan_ports(
     return open_ports
 
 
-def sequential_scan(host: str, ports: Sequence[int], timeout: float = 1.0) -> List[dict]:
+def sequential_scan(
+    host: str, ports: Sequence[int], timeout: float = 1.0
+) -> List[dict]:
     """Reference, sequential implementation used to demonstrate speed-up."""
     open_ports = []
     for p in ports:
@@ -79,7 +108,9 @@ def sequential_scan(host: str, ports: Sequence[int], timeout: float = 1.0) -> Li
     return open_ports
 
 
-def timed_scan(host: str, ports: Sequence[int], timeout: float = 1.0, threads: int = 256):
+def timed_scan(
+    host: str, ports: Sequence[int], timeout: float = 1.0, threads: int = 256
+):
     """Run the concurrent scan and time it (returns ports and elapsed ms)."""
     start = time.perf_counter()
     results = scan_ports(host, ports, timeout=timeout, threads=threads)

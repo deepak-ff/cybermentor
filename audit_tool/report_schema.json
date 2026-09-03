@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Security Audit Report",
+  "type": "object",
+  "required": ["host", "started_at", "finished_at", "duration_ms", "checks", "open_ports"],
+  "properties": {
+    "host": { "type": "string" },
+    "started_at": { "type": "string" },
+    "finished_at": { "type": "string" },
+    "duration_ms": { "type": "integer", "minimum": 0 },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "title", "category", "level", "detail"],
+        "properties": {
+          "id": { "type": "string" },
+          "title": { "type": "string" },
+          "category": { "type": "string" },
+          "level": { "type": "string", "enum": ["PASS","WARN","FAIL","INFO","SKIP"] },
+          "detail": { "type": "string" },
+          "recommendation": { "type": "string" },
+          "cis_ref": { "type": "string" },
+          "host": { "type": "string" }
+        }
+      }
+    },
+    "open_ports": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["port","service"],
+        "properties": { "port": { "type": "integer" }, "service": { "type": "string" } }
+      }
+    },
+    "scan_targets": { "type": ["object","null"] }
+  }
+}

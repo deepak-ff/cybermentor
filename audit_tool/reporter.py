@@ -4,12 +4,23 @@ Both are produced from the same ScanResult object so they always agree.
 The HTML report is a single file with inline CSS (no external assets), which
 makes it easy to share, archive, or attach to a ticket.
 """
+
 from __future__ import annotations
 
 import html
 import json
 from datetime import datetime
 from typing import Optional
+import os
+
+# Optional JSON Schema validation (requires `jsonschema` package)
+_SCHEMA_PATH = os.path.join(os.path.dirname(__file__), "report_schema.json")
+try:
+    import jsonschema  # type: ignore
+
+    _HAS_JSONSCHEMA = True
+except Exception:
+    _HAS_JSONSCHEMA = False
 
 from .models import Level, ScanResult
 
@@ -105,7 +116,16 @@ def to_html(result: ScanResult) -> str:
 def write_reports(result: ScanResult, out_dir: str) -> dict:
     """Write JSON + HTML report files and return the created paths."""
     import os
+
     os.makedirs(out_dir, exist_ok=True)
+    # Validate report against schema when available
+    if _HAS_JSONSCHEMA:
+        try:
+            with open(_SCHEMA_PATH, "r", encoding="utf-8") as fh:
+                schema = json.load(fh)
+            jsonschema.validate(instance=result.to_dict(), schema=schema)
+        except Exception as exc:
+            raise RuntimeError(f"report validation failed: {exc}")
     base = f"audit_{result.host}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
     json_path = os.path.join(out_dir, base + ".json")
     html_path = os.path.join(out_dir, base + ".html")

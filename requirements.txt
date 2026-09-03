@@ -2,3 +2,10 @@
 # No third-party dependencies are required to install or run it.
 #
 # Python 3.8+ is sufficient.
+
+# Dev/test extras
+pytest
+pytest-cov
+coverage
+jsonschema
+mypy

@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cybermentor"
+version = "0.1.0"
+description = "Non-intrusive host security audit tool (CIS-aligned checks + port scanner)"
+readme = "README.md"
+requires-python = ">=3.8"
+authors = [ { name = "Author", email = "you@example.com" } ]
+license = { text = "MIT" }
+
+[project.urls]
+Homepage = "https://example.com/"
+
+[project.scripts]
+audit-tool = "audit_tool.cli:main"
+audit-web = "audit_tool.web:main"
+audit-baseline = "audit_tool.baseline:main"
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+
+[tool.ruff]
+line-length = 88
+extend-ignore = ["E203", "W503"]
+select = ["E", "F", "W", "C90", "B"]
+
+[tool.mypy]
+python_version = 3.8
+check_untyped_defs = true
+disallow_untyped_defs = false
+ignore_missing_imports = true

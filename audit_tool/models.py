@@ -1,4 +1,5 @@
 """Core data models for the security audit tool."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -17,6 +18,7 @@ class Level(str, Enum):
 @dataclass
 class CheckResult:
     """Outcome of a single security check."""
+
     id: str
     title: str
     category: str
@@ -42,6 +44,7 @@ class CheckResult:
 @dataclass
 class ScanResult:
     """Container for a full audit run."""
+
     host: str
     started_at: str
     finished_at: str
