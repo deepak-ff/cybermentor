@@ -2,11 +2,16 @@
 
 from __future__ import annotations
 
-from datetime import datetime
 import os
+import sys
+from datetime import datetime
+from pathlib import Path
 
-from audit_tool.models import CheckResult, Level, ScanResult
-from audit_tool.reporter import write_reports
+# Allow running as `python scripts/generate_demo.py` without installing.
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
+from audit_tool.models import CheckResult, Level, ScanResult  # noqa: E402
+from audit_tool.reporter import write_reports  # noqa: E402
 
 
 def make_demo():

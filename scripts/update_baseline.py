@@ -3,6 +3,7 @@
 Usage: python scripts/update_baseline.py reports/my_report.json
 This will copy the given JSON to baseline/baseline.json for future comparisons.
 """
+
 from __future__ import annotations
 
 import shutil
@@ -25,5 +26,5 @@ def main():
     return 0
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     raise SystemExit(main())

@@ -1,7 +1,7 @@
 import json
 import os
 
-from audit_tool.models import ScanResult, CheckResult, Level
+from audit_tool.models import CheckResult, Level, ScanResult
 from audit_tool.reporter import write_reports
 
 
@@ -29,7 +29,7 @@ def test_report_validates(tmp_path, monkeypatch):
     out = tmp_path / "reports"
     out.mkdir()
     paths = write_reports(sr, str(out))
-    assert (os.path.exists(paths["json"]))
+    assert os.path.exists(paths["json"])
     # load and ensure JSON is valid
     with open(paths["json"], "r", encoding="utf-8") as fh:
         obj = json.load(fh)

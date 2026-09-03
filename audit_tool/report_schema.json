@@ -4,10 +4,13 @@
   "type": "object",
   "required": ["host", "started_at", "finished_at", "duration_ms", "checks", "open_ports"],
   "properties": {
+    "tool": { "type": "string" },
+    "platform": { "type": "string" },
     "host": { "type": "string" },
     "started_at": { "type": "string" },
     "finished_at": { "type": "string" },
     "duration_ms": { "type": "integer", "minimum": 0 },
+    "score": { "type": "integer", "minimum": 0, "maximum": 100 },
     "checks": {
       "type": "array",
       "items": {
@@ -17,11 +20,12 @@
           "id": { "type": "string" },
           "title": { "type": "string" },
           "category": { "type": "string" },
-          "level": { "type": "string", "enum": ["PASS","WARN","FAIL","INFO","SKIP"] },
+          "level": { "type": "string", "enum": ["PASS", "WARN", "FAIL", "INFO", "SKIP"] },
           "detail": { "type": "string" },
           "recommendation": { "type": "string" },
           "cis_ref": { "type": "string" },
-          "host": { "type": "string" }
+          "host": { "type": "string" },
+          "severity": { "type": "string", "enum": ["CRITICAL", "HIGH", "MEDIUM", "LOW"] }
         }
       }
     },
@@ -29,10 +33,13 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["port","service"],
-        "properties": { "port": { "type": "integer" }, "service": { "type": "string" } }
+        "required": ["port", "service"],
+        "properties": {
+          "port": { "type": "integer", "minimum": 1, "maximum": 65535 },
+          "service": { "type": "string" }
+        }
       }
     },
-    "scan_targets": { "type": ["object","null"] }
+    "scan_targets": { "type": ["object", "null"] }
   }
 }

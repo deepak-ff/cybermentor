@@ -11,7 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.8, 3.10, 3.11]
+        # Python 3.8 is EOL; current mypy/black require >= 3.9/3.10 to run.
+        python-version: [3.9, 3.10, 3.11, 3.12]
 
     steps:
       - uses: actions/checkout@v4

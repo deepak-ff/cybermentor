@@ -1,21 +1,24 @@
-# security-audit-tool
+# CyberMentor (security-audit-tool)
 
 A non-intrusive, **Read-Only** host security auditing tool written in **pure
 Python (standard library only — no third-party dependencies)**.
 
 It performs two jobs:
 
-1. **Configuration audit** — runs **24+ CIS Benchmark-aligned checks** across
-   SSH, file permissions, authentication policy, firewalls, kernel hardening,
-   logging, and network settings. It reports each as **PASS / WARN / FAIL /
+1. **Configuration audit** — runs **33 CIS / MS-SCC Benchmark-aligned checks**
+   across SSH, file permissions, authentication policy, firewalls, kernel
+   hardening, logging, network settings, and (on Windows) firewall, SMB,
+   RDP and password policy. It reports each as **PASS / WARN / FAIL /
    INFO / SKIP** and computes a **0–100 hardening score**.
 2. **Multithreaded TCP port scanner** — scans port ranges concurrently using a
    bounded thread pool, which dramatically reduces scan time on real networks
    where most ports are filtered and time out.
 
-It produces two reports from a single run so they always agree:
+It produces up to four reports from a single run so they always agree:
 - **Structured JSON** (machine-readable, easy to feed into other tooling)
 - **Self-contained HTML dashboard** (single file, inline CSS, human-readable)
+- **CSV** (flat table for spreadsheets / SIEM ingestion)
+- **SARIF 2.1.0** (for GitHub code scanning, Visual Studio, etc.)
 
 > The tool is intentionally **non-intrusive**: like the well-known open-source
 > tool [Lynis](https://github.com/CISOfy/lynis), it only reads configuration and
@@ -49,13 +52,24 @@ Example output:
 | Flag | Description |
 |---|---|
 | `--host` | Host to port-scan (default `127.0.0.1`) |
-| `--ports` | Port range/list, e.g. `80` or `1-1024` (default `1-1024`) |
+| `--ports` | Port range/list, e.g. `80`, `1-1024`, `80,443`, or `top` (default `1-1024`) |
 | `--timeout` | Socket connect timeout in seconds (default `1.0`) |
 | `--threads` | Number of scanning threads (default `256`) |
+| `--batch-size` | Ports per concurrent batch (default `1024`) |
 | `--skip-scan` | Run configuration checks only |
 | `--show-speedup` | Compare concurrent vs sequential scanning timings |
 | `--out` | Output directory for reports (default `reports`) |
-| `--hostname` | Label used in the report (default `localhost`) |
+| `--hostname` | Label used in the report (default: the `--host` target) |
+| `--formats` | Comma list of report formats to write: `json,html,csv,sarif` (default `json,html`) |
+| `--only` | Only run checks in these categories (comma list, case-insensitive) |
+| `--exclude` | Exclude checks by id (comma list, case-insensitive) |
+| `--list-checks` | Print the registered checks and exit |
+| `--fail-exit` | Exit with code 1 if any FAIL results are present (CI-friendly) |
+| `-v / -vv` | Increase verbosity |
+| `--version` | Show version and exit |
+
+After `pip install .` the same entry points are available as console scripts:
+`audit-tool`, `audit-web`, `audit-baseline`.
 
 ### Comparing concurrent vs sequential scanning
 
@@ -81,27 +95,71 @@ it at your `reports` directory:
 
 ```bash
 python -m audit_tool.web --reports reports --port 8000
+# or, after `pip install .`:
+audit-web --reports reports --port 8000
 ```
 
 Open `http://localhost:8000/` in a browser to view reports and compute diffs
-between two saved runs.
+between two saved runs. The API is intentionally tiny and JSON-based:
+`/api/list`, `/api/report?file=...` and `/api/diff?base=...&new=...`.
 
+### Comparing two runs from the command line
 
-## Checks included (24+)
+To diff two JSON reports without a browser (useful in CI / scripts):
 
-- **SSH** — `PermitRootLogin`, `PasswordAuthentication`, `PermitEmptyPasswords`,
-  `sshd_config` permissions
-- **Filesystem** — world-writable files/dirs, `/etc/passwd` & `/etc/shadow`
-  modes, sticky bit on `/tmp`/`/var/tmp`, SUID/SGID inventory, `/tmp` filesystem
-- **Authentication** — password aging (`PASS_MAX_DAYS`), `UMASK`, empty
-  password entries, `sudoers` permissions
-- **Firewall / Network** — host firewall active, `ip_forward`, ICMP redirects,
-  listening ports inventory
-- **Kernel** — `kptr_restrict`, core dumps, ASLR (`randomize_va_space`)
-- **Logging** — `auditd`, `rsyslog`
+```bash
+python -m audit_tool.baseline baseline/baseline.json reports/audit_127.0.0.1_*.json
+# or: audit-baseline <base.json> <new.json>
+```
 
-Each check returns a `CheckResult` with its **CIS reference** so findings can be
-traced to the relevant benchmark.
+This prints a summary of checks that changed level between the two runs.
+Capture a new baseline at any time with the helper script:
+
+```bash
+python scripts/update_baseline.py reports/my_report.json
+```
+
+## Checks included (33)
+
+| ID | Title | Reference |
+|---|---|---|
+| SSH-001 | PermitRootLogin is disabled | CIS 5.2.8 |
+| SSH-002 | Password authentication is disabled | CIS 5.2.9 |
+| SSH-003 | PermitEmptyPasswords is disabled | CIS 5.2.10 |
+| SSH-004 | SSH config file permissions hardened | CIS 5.2.1 |
+| FILE-001 | No world-writable files in /etc | CIS 6.1.11 |
+| FILE-002 | World-writable directories checked | CIS 5.1.2 |
+| FILE-003 | /etc/passwd permission 644 | CIS 6.1.1 |
+| FILE-004 | /etc/shadow permission 640/600 | CIS 6.1.2 |
+| FILE-005 | Sticky bit set on world-writable dirs | CIS 1.1.1 |
+| FILE-006 | SUID/SGID binaries inventory reviewed | CIS 6.1.13 |
+| FILE-007 | /etc/group permission 644 | CIS 6.1.3 |
+| AUTH-001 | Password aging configured | CIS 5.4.1.1 |
+| AUTH-002 | Umask set to 027 or stricter | CIS 5.4.4 |
+| AUTH-003 | Empty password entries absent | CIS 5.4.1 |
+| AUTH-004 | Root account is locked or key-based only | CIS 5.3.1 |
+| FIRE-001 | Host-based firewall active | CIS 3.5.1 |
+| NET-001 | IP forwarding is disabled | CIS 3.2.1 |
+| NET-002 | ICMP redirect accept is disabled | CIS 3.2.2 |
+| NET-003 | Open listening ports inventoried | — |
+| NET-004 | Reverse path filtering enabled | CIS 3.3.4.1 |
+| KRNL-001 | Kernel pointers are restricted | CIS 3.3.3 |
+| KRNL-002 | Core dumps are disabled | CIS 1.5.1 |
+| KRNL-003 | Address space layout randomization (ASLR) enabled | CIS 3.3.4 |
+| LOGG-001 | Audit daemon (auditd) present | CIS 4.1 |
+| LOGG-002 | Rsyslog is present | CIS 4.2 |
+| MISC-001 | /tmp is a separate filesystem | CIS 1.1.2 |
+| MISC-002 | sudoers file permission 440 | CIS 5.5.2 |
+| WIN-001 | Windows Firewall enabled for all profiles | MS-SCC 2.1.2 |
+| WIN-002 | User Account Control (UAC) enabled | MS-SCC 2.2.11 |
+| WIN-003 | SMBv1 protocol disabled | MS-SCC 3.14.2 |
+| WIN-004 | RDP requires network level authentication | MS-SCC 4.28.1 |
+| WIN-005 | Windows Update service is running | MS-SCC 3.3.5 |
+| WIN-006 | Local password policy meets minimums | MS-SCC 3.3.6 |
+
+On non-Windows hosts the `WIN-*` checks report `SKIP`, and vice versa — the
+same installation is cross-platform. Each check returns a `CheckResult` with
+its **CIS / MS-SCC reference** so findings can be traced to the benchmark.
 
 ---
 
@@ -109,11 +167,14 @@ traced to the relevant benchmark.
 
 ```
 audit_tool/
-  cli.py        # argument parsing + orchestration
-  checks.py     # check registry + each CIS-aligned check (all read-only)
+  cli.py        # argument parsing + orchestration (entry point `audit-tool`)
+  checks.py     # check registry + each CIS/MS-SCC-aligned check (all read-only)
   scanner.py    # multithreaded TCP port scanner
-  reporter.py   # JSON + HTML report writers
+  reporter.py   # JSON / HTML / CSV / SARIF report writers
   models.py     # CheckResult / ScanResult dataclasses + scoring
+  web.py        # stdlib HTTP report browser + diff API (entry `audit-web`)
+  baseline.py   # JSON-vs-JSON report comparison (entry `audit-baseline`)
+  report_schema.json  # JSON Schema the JSON reports are validated against
 ```
 
 - `checks.py` uses a small `@register` decorator so new checks are easy to add.
@@ -123,13 +184,27 @@ audit_tool/
 
 ---
 
+## Development & quality
+
+- **Standard library only** — nothing to install beyond Python itself
+  (tests add `pytest`, `ruff`, `black`, `mypy`, `jsonschema`).
+- **Test suite**: 249 unit/integration tests, ~99% line coverage.
+- **Quality gates in CI**: `ruff check`, `black --check`, `mypy`,
+  `coverage run -m pytest`, plus a weekly scheduled baseline-scan workflow.
+- **JSON reports are schema-validated** (`audit_tool/report_schema.json`)
+  before they are written; a validation failure exits non-zero.
+
 ## Roadmap / possible additions
 
-- `--json` / `--csv` report formats
-- Check categories selection (`--only SSH,kernel`)
+Already delivered (v1.0): `--formats csv,sarif`, category selection
+(`--only` / `--exclude`), baseline/diff mode (CLI + web UI), CI-friendly exit
+codes (`--fail-exit`).
+
+Still possible:
+
 - Remote host checks over SSH (reusing a user-supplied key)
-- Baseline/diff mode to compare two runs
-- CI-friendly exit codes (non-zero when `FAIL` present)
+- More CIS controls (LVM, systemd, PAM, DNS, NTP, …)
+- GitHub-App / SARIF annotation integration examples
 
 ---
 
