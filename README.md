@@ -73,6 +73,20 @@ with the thread count.
 
 ---
 
+## Browser UI & Baseline Diff
+
+A lightweight web UI is included (no extra dependencies) to browse JSON reports
+and compare two runs (baseline/diff). Run it from the project root and point
+it at your `reports` directory:
+
+```bash
+python -m audit_tool.web --reports reports --port 8000
+```
+
+Open `http://localhost:8000/` in a browser to view reports and compute diffs
+between two saved runs.
+
+
 ## Checks included (24+)
 
 - **SSH** — `PermitRootLogin`, `PasswordAuthentication`, `PermitEmptyPasswords`,
@@ -122,3 +136,7 @@ audit_tool/
 ## License
 
 MIT — free to use, modify, and extend.
+
+## CI badges
+
+- Coverage: ![coverage](https://codecov.io/gh/deepak-ff/cybermentor/branch/main/graph/badge.svg)
