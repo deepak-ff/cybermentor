@@ -72,6 +72,8 @@ python_version = "3.10"
 check_untyped_defs = true
 disallow_untyped_defs = false
 ignore_missing_imports = true
+# Skip build/ byproducts (a local `pip install .` creates build/lib/audit_tool).
+exclude = ["^build/"]
 
 [tool.pytest.ini_options]
 minversion = "6.0"
