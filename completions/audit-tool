@@ -1,0 +1,28 @@
+# Bash completion for CyberMentor: audit-tool / audit-web / audit-baseline
+_cybermentor_audit_tool() {
+  local cur
+  cur="${COMP_WORDS[COMP_CWORD]}"
+  local opts="--host --ports --timeout --threads --batch-size --skip-scan --show-speedup --out --hostname --formats --only --exclude --list-checks --fail-exit -v --version -h"
+  if [[ "$cur" == -* ]]; then
+    COMPREPLY=( $(compgen -W "$opts" -- "$cur") )
+  fi
+}
+_cybermentor_audit_web() {
+  local cur
+  cur="${COMP_WORDS[COMP_CWORD]}"
+  local opts="--reports --port --host -h"
+  if [[ "$cur" == -* ]]; then
+    COMPREPLY=( $(compgen -W "$opts" -- "$cur") )
+  fi
+}
+_cybermentor_audit_baseline() {
+  local cur
+  cur="${COMP_WORDS[COMP_CWORD]}"
+  local opts="--help -h"
+  if [[ "$cur" == -* ]]; then
+    COMPREPLY=( $(compgen -W "$opts" -- "$cur") )
+  fi
+}
+complete -F _cybermentor_audit_tool audit-tool
+complete -F _cybermentor_audit_web audit-web
+complete -F _cybermentor_audit_baseline audit-baseline

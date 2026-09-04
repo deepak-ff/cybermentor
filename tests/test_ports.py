@@ -1,6 +1,8 @@
+"""Port-range parsing tests (delegates to the CLI parser)."""
+
 import pytest
 
-from audit_tool.cli import _parse_ports
+from audit_tool.cli import parse_ports
 
 
 @pytest.mark.parametrize(
@@ -13,14 +15,20 @@ from audit_tool.cli import _parse_ports
     ],
 )
 def test_parse_ports_valid(spec, expected):
-    assert _parse_ports(spec) == expected
+    assert parse_ports(spec) == expected
+
+
+def test_parse_ports_top_preset():
+    from audit_tool.scanner import TOP_PORTS
+
+    assert parse_ports("top") == sorted(set(TOP_PORTS))
 
 
 def test_parse_ports_invalid_range():
     with pytest.raises(ValueError):
-        _parse_ports("1024-1")
+        parse_ports("1024-1")
 
 
 def test_parse_ports_out_of_bounds():
     with pytest.raises(ValueError):
-        _parse_ports("0-70000")
+        parse_ports("0-70000")

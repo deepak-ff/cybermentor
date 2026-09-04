@@ -4,32 +4,80 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "cybermentor"
-version = "0.1.0"
-description = "Non-intrusive host security audit tool (CIS-aligned checks + port scanner)"
+version = "1.0.0"
+description = "Cross-platform, non-intrusive host security audit tool: CIS/MS-SCC aligned checks, multithreaded TCP port scanner, JSON/HTML/CSV/SARIF reports"
 readme = "README.md"
 requires-python = ">=3.8"
-authors = [ { name = "Author", email = "you@example.com" } ]
+authors = [{ name = "deepak-ff" }]
 license = { text = "MIT" }
+keywords = [
+    "security",
+    "audit",
+    "compliance",
+    "cis-benchmark",
+    "hardening",
+    "port-scanner",
+    "sarif",
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "Intended Audience :: System Administrators",
+    "Intended Audience :: Information Technology",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Security",
+    "Topic :: System :: Systems Administration",
+    "Topic :: Utilities",
+]
 
 [project.urls]
-Homepage = "https://example.com/"
+Homepage = "https://github.com/deepak-ff/cybermentor"
+Issues = "https://github.com/deepak-ff/cybermentor/issues"
 
 [project.scripts]
 audit-tool = "audit_tool.cli:main"
 audit-web = "audit_tool.web:main"
 audit-baseline = "audit_tool.baseline:main"
 
+[tool.setuptools]
+# Explicit discovery: the repo has a `baseline/` data dir that flat-layout
+# auto-discovery mistakes for a second top-level package.
+packages = ["audit_tool"]
+
+[tool.setuptools.package-data]
+# The JSON Schema used to validate reports before they are written.
+audit_tool = ["report_schema.json"]
+
 [tool.black]
 line-length = 88
-target-version = ['py38']
+target-version = ["py38"]
 
 [tool.ruff]
 line-length = 88
-extend-ignore = ["E203", "W503"]
-select = ["E", "F", "W", "C90", "B"]
+target-version = "py38"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "C90", "B", "I"]
+ignore = ["E203"]
 
 [tool.mypy]
-python_version = 3.8
+# Note: quoted — TOML would parse 3.10 as the float 3.1.
+python_version = "3.10"
 check_untyped_defs = true
 disallow_untyped_defs = false
 ignore_missing_imports = true
+# Skip build/ byproducts (a local `pip install .` creates build/lib/audit_tool).
+exclude = ["^build/"]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+testpaths = ["tests"]
+addopts = "-q"
+# Make the package importable without installing it (CI also pip installs).
+pythonpath = ["."]
