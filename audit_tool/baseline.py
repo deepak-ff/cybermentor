@@ -20,6 +20,17 @@ def load(path: str) -> Dict[str, Any]:
         return json.load(fh)
 
 
+def validate_report(doc: Any, path: str) -> Dict[str, Any]:
+    """Ensure *doc* looks like an audit JSON report.
+
+    Guards against passing e.g. a SARIF file (also ``*.json``), which would
+    otherwise silently compare as an empty baseline.
+    """
+    if not isinstance(doc, dict) or not isinstance(doc.get("checks"), list):
+        raise ValueError(f"not an audit report (missing 'checks' list): {path}")
+    return doc
+
+
 def compare(base: Dict[str, Any], new: Dict[str, Any]) -> Dict[str, Any]:
     amap = {c["id"]: c for c in base.get("checks", [])}
     bmap = {c["id"]: c for c in new.get("checks", [])}
@@ -76,6 +87,12 @@ def main(argv: Optional[List[str]] = None) -> int:
         new = load(args.new)
     except json.JSONDecodeError as exc:
         print(f"Invalid JSON: {exc}", file=sys.stderr)
+        return 2
+    try:
+        base = validate_report(base, args.base)
+        new = validate_report(new, args.new)
+    except ValueError as exc:
+        print(str(exc), file=sys.stderr)
         return 2
     diffs = compare(base, new)
     print(json.dumps(diffs, indent=2))

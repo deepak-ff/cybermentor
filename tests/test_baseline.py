@@ -99,3 +99,21 @@ def test_main_invalid_json_exit_2(capsys, tmp_path):
     good.write_text("{}", encoding="utf-8")
     rc = baseline.main([str(bad), str(good)])
     assert rc == 2
+
+
+def test_main_sarif_like_report_rejected(capsys, tmp_path):
+    """SARIF files are also ``*.json``; they must be rejected, not diffed
+    silently as an empty baseline."""
+    sarif = tmp_path / "scan.sarif.json"
+    sarif.write_text(json.dumps({"version": "2.1.0", "runs": []}), encoding="utf-8")
+    good = tmp_path / "good.json"
+    good.write_text(
+        json.dumps(
+            {"host": "h", "checks": [{"id": "A", "level": "PASS", "title": "t"}]}
+        ),
+        encoding="utf-8",
+    )
+    rc = baseline.main([str(sarif), str(good)])
+    out = capsys.readouterr()
+    assert rc == 2
+    assert "not an audit report" in out.err

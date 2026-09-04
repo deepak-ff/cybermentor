@@ -45,6 +45,15 @@ audit-tool = "audit_tool.cli:main"
 audit-web = "audit_tool.web:main"
 audit-baseline = "audit_tool.baseline:main"
 
+[tool.setuptools]
+# Explicit discovery: the repo has a `baseline/` data dir that flat-layout
+# auto-discovery mistakes for a second top-level package.
+packages = ["audit_tool"]
+
+[tool.setuptools.package-data]
+# The JSON Schema used to validate reports before they are written.
+audit_tool = ["report_schema.json"]
+
 [tool.black]
 line-length = 88
 target-version = ["py38"]
