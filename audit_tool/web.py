@@ -11,11 +11,16 @@ from __future__ import annotations
 
 import argparse
 import html
+import itertools
 import json
 import os
+import threading
+import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from typing import Any, Dict, List, Optional
 from urllib.parse import parse_qs, urlparse
+
+from .cli import parse_ports, run_audit
 
 
 def list_reports(reports_dir: str) -> List[str]:
@@ -95,6 +100,77 @@ def diff_reports(a: dict, b: dict) -> dict:
     }
 
 
+# ---------------------------------------------------------------- scan jobs
+
+# Background scan jobs started through POST /api/scan. Bounded so a long-lived
+# server cannot accumulate state.
+_JOBS: Dict[str, Dict[str, Any]] = {}
+_JOBS_LOCK = threading.Lock()
+_JOB_SEQ = itertools.count(1)
+_MAX_JOBS = 20
+_VALID_FORMATS = ("json", "html", "csv", "sarif")
+
+
+def _new_job(job_id: str) -> Dict[str, Any]:
+    job: Dict[str, Any] = {
+        "id": job_id,
+        "status": "running",
+        "reports": [],
+        "error": None,
+    }
+    with _JOBS_LOCK:
+        _JOBS[job_id] = job
+        while len(_JOBS) > _MAX_JOBS:
+            _JOBS.pop(next(iter(_JOBS)))
+    return job
+
+
+def get_job(job_id: str) -> Optional[Dict[str, Any]]:
+    with _JOBS_LOCK:
+        job = _JOBS.get(job_id)
+        return dict(job) if job else None
+
+
+def parse_scan_request(body: Any) -> Dict[str, Any]:
+    """Validate a POST /api/scan JSON body; raises ValueError on bad input."""
+    if not isinstance(body, dict):
+        raise ValueError("body must be a JSON object")
+    host = str(body.get("host") or "").strip()
+    if not host:
+        raise ValueError("host is required")
+    ports = str(body.get("ports") or "1-1024").strip() or "1-1024"
+    parse_ports(ports)  # raises ValueError on bad spec
+    if body.get("threads") is None:
+        threads = 256
+    else:
+        threads = int(body["threads"])
+    if not 1 <= threads <= 1024:
+        raise ValueError("threads must be between 1 and 1024")
+    if body.get("timeout") is None:
+        timeout = 1.0
+    else:
+        timeout = float(body["timeout"])
+    if not 0.05 <= timeout <= 30:
+        raise ValueError("timeout must be between 0.05 and 30 seconds")
+    skip_scan = bool(body.get("skip_scan", False))
+    formats = body.get("formats") or ["json", "html"]
+    if isinstance(formats, str):
+        formats = [f.strip() for f in formats.split(",")]
+    if not isinstance(formats, list) or not all(isinstance(f, str) for f in formats):
+        raise ValueError("formats must be a list of strings")
+    formats = [f.lower() for f in formats if f.lower() in _VALID_FORMATS]
+    if not formats:
+        raise ValueError(f"no valid formats (use: {', '.join(_VALID_FORMATS)})")
+    return {
+        "host": host,
+        "ports": ports,
+        "threads": threads,
+        "timeout": timeout,
+        "skip_scan": skip_scan,
+        "formats": formats,
+    }
+
+
 class Handler(BaseHTTPRequestHandler):
     server_version = "audit-web/1.0"
 
@@ -160,7 +236,64 @@ class Handler(BaseHTTPRequestHandler):
                 return self._send_json({"error": "file not found"}, 404)
             return self._send_json(diff_reports(a, b))
 
+        if path == "/api/scan":
+            return self._api_scan_get(query)
+
         return self._send_json({"error": "not found"}, 404)
+
+    def _api_scan_get(self, query: Dict[str, str]) -> None:
+        job = get_job(query.get("id", ""))
+        if job is None:
+            return self._send_json({"error": "unknown scan id"}, 404)
+        return self._send_json(job)
+
+    def do_POST(self):  # noqa: N802 (http.server API)
+        path = urlparse(self.path).path
+        if path != "/api/scan":
+            return self._send_json({"error": "unknown endpoint"}, 404)
+        # The scan API can initiate port scans of arbitrary targets, so it
+        # is only enabled when the server is bound to a loopback address.
+        if not getattr(self.server, "allow_scan", False):
+            return self._send_json(
+                {
+                    "error": (
+                        "scan API is disabled because the server is bound "
+                        "to a non-loopback address; run scans from the CLI"
+                    )
+                },
+                403,
+            )
+        try:
+            length = int(self.headers.get("Content-Length") or 0)
+            body = json.loads(self.rfile.read(length) or b"{}")
+            params = parse_scan_request(body)
+        except (ValueError, TypeError) as exc:
+            return self._send_json({"error": str(exc)}, 400)
+
+        reports_dir = str(getattr(self.server, "reports_dir", "reports"))
+        job_id = time.strftime("web_%Y%m%d_%H%M%S") + f"_{next(_JOB_SEQ):04d}"
+        job = _new_job(job_id)
+
+        def _work() -> None:
+            try:
+                _result, paths = run_audit(
+                    host=params["host"],
+                    ports_spec=params["ports"],
+                    timeout=params["timeout"],
+                    threads=params["threads"],
+                    skip_scan=params["skip_scan"],
+                    out_dir=reports_dir,
+                    hostname=params["host"],
+                    formats=params["formats"],
+                )
+                job["reports"] = sorted(os.path.basename(p) for p in paths.values())
+                job["status"] = "done"
+            except Exception as exc:  # noqa: BLE001 — surface any failure to the UI
+                job["status"] = "error"
+                job["error"] = f"{type(exc).__name__}: {exc}"
+
+        threading.Thread(target=_work, daemon=True).start()
+        return self._send_json({"id": job_id, "status": "running"}, 202)
 
     def log_message(self, fmt: str, *args: Any) -> None:  # pragma: no cover
         pass
@@ -255,6 +388,46 @@ async function doDiff(){
   }
   d.innerHTML=out;
 }
+async function runScan(){
+  const status=document.getElementById('s_status');
+  const body={
+    host:document.getElementById('s_host').value.trim(),
+    ports:document.getElementById('s_ports').value.trim()||'1-1024',
+    threads:parseInt(document.getElementById('s_threads').value,10)||256,
+    skip_scan:document.getElementById('s_skip').checked,
+    formats:['json','html']
+  };
+  if(!body.host){status.textContent='host is required';return;}
+  status.textContent='starting scan…';
+  let obj;
+  try{
+    const r=await fetch('/api/scan',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(body)
+    });
+    obj=await r.json();
+    if(!r.ok){status.textContent='error: '+(obj.error||r.status);return;}
+  }catch(e){status.textContent='error: '+e;return;}
+  status.textContent='scanning '+body.host+'…';
+  const t0=Date.now();
+  for(;;){
+    await new Promise(r=>setTimeout(r,1500));
+    let st;
+    try{
+      st=await (await fetch('/api/scan?id='+encodeURIComponent(obj.id))).json();
+    }catch(e){continue;}
+    if(st.status==='done'){
+      status.textContent='done — '+st.reports.length+' report(s) written';
+      await refresh();
+      const sel=document.getElementById('reports');
+      if(st.reports.length){sel.value=st.reports[st.reports.length-1];loadReport();}
+      return;
+    }
+    if(st.status==='error'){status.textContent='error: '+(st.error||'unknown');return;}
+    if(Date.now()-t0>600000){status.textContent='gave up waiting for scan';return;}
+  }
+}
 window.onload=refresh;
 """
 
@@ -272,6 +445,17 @@ def _index_html(reports_dir: str) -> str:
         '  <select id="reports"></select>\n'
         '  <button onclick="loadReport()">View</button>\n'
         '  <button onclick="refresh()">Refresh</button>\n'
+        "</div>\n"
+        '<div style="margin-top:12px;border:1px solid #eee;padding:10px">\n'
+        '  <h3 style="margin-top:0">New scan</h3>\n'
+        '  <div style="margin-top:6px">\n'
+        '    Host <input id="s_host" value="127.0.0.1" size="16">\n'
+        '    Ports <input id="s_ports" value="1-1024" size="14">\n'
+        '    Threads <input id="s_threads" value="256" size="5">\n'
+        '    <label><input type="checkbox" id="s_skip"> skip port scan</label>\n'
+        '    <button onclick="runScan()">Run scan</button>\n'
+        '    <span id="s_status" class="muted"></span>\n'
+        "  </div>\n"
         "</div>\n"
         '<div style="margin-top:8px"><h3>Viewer</h3>'
         '<div id="viewer"></div></div>\n'
@@ -299,10 +483,17 @@ def main(argv: Optional[List[str]] = None) -> int:
     os.makedirs(reports_dir, exist_ok=True)
     httpd = ThreadingHTTPServer((args.host, args.port), Handler)
     httpd.daemon_threads = True
-    # Runtime attribute; read back by Handler via getattr(). Plain
+    # Runtime attributes; read back by Handler via getattr(). Plain
     # assignment would fail mypy (unknown attribute on HTTPServer).
     setattr(httpd, "reports_dir", reports_dir)  # noqa: B010
+    allow_scan = args.host in {"127.0.0.1", "::1", "localhost"}
+    setattr(httpd, "allow_scan", allow_scan)  # noqa: B010
     print(f"Serving reports from {reports_dir} at http://{args.host}:{args.port}/")
+    if not allow_scan:
+        print(
+            "WARNING: bound to a non-loopback address — the /api/scan "
+            "endpoint is DISABLED (use the CLI to run scans)."
+        )
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:

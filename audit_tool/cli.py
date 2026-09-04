@@ -7,7 +7,7 @@ import logging
 import sys
 import time
 from datetime import datetime
-from typing import List, Optional, Sequence, Tuple
+from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 from . import __version__
 from .checks import current_platform, run_all_checks
@@ -173,25 +173,32 @@ def _configure_logging(verbose: int) -> None:
     logging.basicConfig(level=level, format="[%(levelname)s] %(message)s")
 
 
-def _run_scan(args: argparse.Namespace) -> Tuple[List[dict], Optional[int]]:
+def _run_scan(
+    host: str,
+    ports_spec: str,
+    timeout: float,
+    threads: int,
+    batch_size: int,
+    show_speedup: bool,
+) -> Tuple[List[dict], Optional[int]]:
     """Run the TCP port scan (and optional sequential comparison).
 
     Returns (open_ports, sequential_elapsed_ms or None).
     """
     log.info(
         "Scanning %s:%s (threads=%d, batch=%d) ...",
-        args.host,
-        args.ports,
-        args.threads,
-        args.batch_size,
+        host,
+        ports_spec,
+        threads,
+        batch_size,
     )
-    ports = parse_ports(args.ports)
+    ports = parse_ports(ports_spec)
     open_ports, elapsed_ms = timed_scan(
-        args.host,
+        host,
         ports,
-        timeout=args.timeout,
-        threads=args.threads,
-        batch_size=args.batch_size,
+        timeout=timeout,
+        threads=threads,
+        batch_size=batch_size,
     )
     log.info(
         "Port scan complete in %d ms; %d open port(s).",
@@ -199,9 +206,9 @@ def _run_scan(args: argparse.Namespace) -> Tuple[List[dict], Optional[int]]:
         len(open_ports),
     )
     speedup_ms: Optional[int] = None
-    if args.show_speedup:
+    if show_speedup:
         seq_start = time.time()
-        sequential_scan(args.host, ports, timeout=args.timeout)
+        sequential_scan(host, ports, timeout=timeout)
         speedup_ms = int((time.time() - seq_start) * 1000)
         log.info(
             "Speed-up vs sequential: %d ms -> %d ms (%.1fx faster)",
@@ -212,42 +219,58 @@ def _run_scan(args: argparse.Namespace) -> Tuple[List[dict], Optional[int]]:
     return open_ports, speedup_ms
 
 
-def main(argv: Optional[Sequence[str]] = None) -> int:
-    args = build_parser().parse_args(argv)
-    _configure_logging(args.verbose)
-    # The report is labelled with --hostname when given, otherwise with the
-    # scan target. The port scan itself always targets --host.
-    label = args.hostname or args.host
+def run_audit(
+    host: str,
+    ports_spec: str = "1-1024",
+    timeout: float = 1.0,
+    threads: int = 256,
+    batch_size: int = 1024,
+    skip_scan: bool = False,
+    show_speedup: bool = False,
+    out_dir: str = "reports",
+    hostname: Optional[str] = None,
+    formats: Optional[Sequence[str]] = None,
+    categories: Optional[Sequence[str]] = None,
+    exclude: Optional[Sequence[str]] = None,
+) -> Tuple[ScanResult, Dict[str, str]]:
+    """Run a full audit (configuration checks + port scan) and write reports.
 
-    if args.list_checks:
-        _print_check_table(parse_csv_list(args.only), parse_csv_list(args.exclude))
-        return 0
+    Shared by the CLI and the web backend.
 
-    try:
-        parse_ports(args.ports)  # validate early so bad input exits with 2
-    except ValueError as exc:
-        log.error(str(exc))
-        return 2
-
-    formats = [f.strip().lower() for f in args.formats.split(",") if f.strip()]
-    if not formats:
-        log.error("invalid --formats value")
-        return 2
-
-    only = parse_csv_list(args.only)
-    exclude = parse_csv_list(args.exclude)
+    Raises:
+        ValueError: invalid port spec or no usable report formats.
+        RuntimeError: a generated report failed JSON schema validation.
+    """
+    label = hostname or host
+    parse_ports(ports_spec)  # validate early so bad input fails fast
+    if formats is None:
+        formats = ["json", "html"]
+    clean = [f.strip().lower() for f in formats if f and f.strip()]
+    if not clean:
+        raise ValueError("invalid --formats value")
 
     started = datetime.now().isoformat(timespec="seconds")
     start_ts = time.time()
     log.info("Running configuration checks on %s ...", label)
-    checks = run_all_checks(label, categories=only, exclude=exclude)
+    checks = run_all_checks(label, categories=categories, exclude=exclude)
 
-    if args.skip_scan:
+    if skip_scan:
         log.info("Port scan skipped.")
         open_ports: List[dict] = []
         speedup_ms: Optional[int] = None
+        scan_targets: Dict[str, Any] = {"target": host, "skipped": True}
     else:
-        open_ports, speedup_ms = _run_scan(args)
+        open_ports, speedup_ms = _run_scan(
+            host, ports_spec, timeout, threads, batch_size, show_speedup
+        )
+        scan_targets = {
+            "target": host,
+            "ports": ports_spec,
+            "threads": threads,
+            "batch_size": batch_size,
+            "timeout": timeout,
+            "speedup_ms_sequential": speedup_ms,
+        }
 
     finished = datetime.now().isoformat(timespec="seconds")
     duration_ms = int((time.time() - start_ts) * 1000)
@@ -259,24 +282,39 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         duration_ms=duration_ms,
         checks=checks,
         open_ports=open_ports,
-        scan_targets=(
-            {
-                "target": args.host,
-                "ports": args.ports,
-                "threads": args.threads,
-                "batch_size": args.batch_size,
-                "timeout": args.timeout,
-                "speedup_ms_sequential": speedup_ms,
-            }
-            if not args.skip_scan
-            else {"target": args.host, "skipped": True}
-        ),
+        scan_targets=scan_targets,
         tool=f"security-audit-tool {__version__}",
         platform=current_platform().value,
     )
+    paths = write_reports(result, out_dir, formats=clean)
+    return result, paths
+
+
+def main(argv: Optional[Sequence[str]] = None) -> int:
+    args = build_parser().parse_args(argv)
+    _configure_logging(args.verbose)
+
+    if args.list_checks:
+        _print_check_table(parse_csv_list(args.only), parse_csv_list(args.exclude))
+        return 0
 
     try:
-        paths = write_reports(result, args.out, formats=formats)
+        # The report is labelled with --hostname when given, otherwise with
+        # the scan target. The port scan itself always targets --host.
+        result, paths = run_audit(
+            host=args.host,
+            ports_spec=args.ports,
+            timeout=args.timeout,
+            threads=args.threads,
+            batch_size=args.batch_size,
+            skip_scan=args.skip_scan,
+            show_speedup=args.show_speedup,
+            out_dir=args.out,
+            hostname=args.hostname,
+            formats=args.formats.split(","),
+            categories=parse_csv_list(args.only),
+            exclude=parse_csv_list(args.exclude),
+        )
     except ValueError as exc:
         log.error(str(exc))
         return 2
@@ -285,7 +323,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         return 3
 
     log.info("\nHardening score: %d/100", result.score)
-    counts = {lvl: sum(1 for c in checks if c.level == lvl) for lvl in Level}
+    counts = {lvl: sum(1 for c in result.checks if c.level == lvl) for lvl in Level}
     log.info(
         "Summary: %s",
         ", ".join(f"{lvl.value}: {counts[lvl]}" for lvl in Level if counts[lvl]),
@@ -293,14 +331,12 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     for fmt, path in paths.items():
         log.info("%-9s : %s", fmt, path)
 
-    if args.fail_exit:
-        has_fail = any(c.level == Level.FAIL for c in checks)
-        if has_fail:
-            log.warning(
-                "One or more checks returned FAIL; "
-                "exiting with code 1 due to --fail-exit"
-            )
-            return 1
+    if args.fail_exit and any(c.level == Level.FAIL for c in result.checks):
+        log.warning(
+            "One or more checks returned FAIL; "
+            "exiting with code 1 due to --fail-exit"
+        )
+        return 1
     return 0
 
 

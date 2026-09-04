@@ -71,6 +71,25 @@ Example output:
 After `pip install .` the same entry points are available as console scripts:
 `audit-tool`, `audit-web`, `audit-baseline`.
 
+### Installing on Kali / Debian / Ubuntu
+
+The tool is pure Python stdlib, so on Kali (or any Debian/Ubuntu box) you can
+run it straight from a clone, or install it properly:
+
+```bash
+git clone https://github.com/deepak-ff/cybermentor.git
+cd cybermentor
+sudo ./install.sh        # all users: venv in /opt, scripts in /usr/local/bin
+# or, without root (installs into ~/.local):
+./install.sh
+
+audit-tool --list-checks        # try it
+./uninstall.sh                  # removes everything again
+```
+
+`install.sh` also installs bash completion for all three commands when the
+system completion directory is writable.
+
 ### Comparing concurrent vs sequential scanning
 
 ```bash
@@ -100,8 +119,25 @@ audit-web --reports reports --port 8000
 ```
 
 Open `http://localhost:8000/` in a browser to view reports and compute diffs
-between two saved runs. The API is intentionally tiny and JSON-based:
-`/api/list`, `/api/report?file=...` and `/api/diff?base=...&new=...`.
+between two saved runs.
+
+#### Running scans from the browser (backend + frontend)
+
+The UI has a **New scan** panel: enter host / ports / threads, hit *Run
+scan*, and the tool runs in a background thread on the machine hosting the
+server — when it finishes, the new report appears in the list and opens
+automatically.
+
+API: `POST /api/scan` with JSON body
+`{"host": "10.0.0.5", "ports": "1-1024", "threads": 256, "skip_scan": false,
+"formats": ["json", "html"]}` → `202 {"id": "web_…"}`; poll
+`GET /api/scan?id=…` until `status` is `done` (or `error`).
+
+**Security:** because a scan can target arbitrary hosts, the scan API is
+only enabled when the server is bound to a **loopback address**
+(`127.0.0.1`/`::1`). If you bind with `--host 0.0.0.0` (e.g. to browse
+reports on a LAN), `POST /api/scan` returns `403` — run scans from the CLI
+instead. All other endpoints are read-only.
 
 ### Comparing two runs from the command line
 

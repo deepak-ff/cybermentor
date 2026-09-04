@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import threading
+import time
 import urllib.error
 import urllib.request
 from http.server import ThreadingHTTPServer
@@ -20,12 +21,44 @@ def server(report_files, tmp_path):
     httpd = ThreadingHTTPServer(("127.0.0.1", 0), web.Handler)
     httpd.daemon_threads = True
     setattr(httpd, "reports_dir", str(tmp_path))  # noqa: B010
+    setattr(httpd, "allow_scan", True)  # noqa: B010 (loopback bind)
     port = httpd.server_address[1]
     thread = threading.Thread(target=httpd.serve_forever, daemon=True)
     thread.start()
     yield port, base, new
     httpd.shutdown()
     thread.join(timeout=5)
+
+
+@pytest.fixture
+def public_server(report_files, tmp_path):
+    """Server bound to 0.0.0.0 — scan API must be disabled here."""
+    httpd = ThreadingHTTPServer(("0.0.0.0", 0), web.Handler)
+    httpd.daemon_threads = True
+    setattr(httpd, "reports_dir", str(tmp_path))  # noqa: B010
+    port = httpd.server_address[1]
+    thread = threading.Thread(target=httpd.serve_forever, daemon=True)
+    thread.start()
+    yield port
+    httpd.shutdown()
+    thread.join(timeout=5)
+
+
+def post(port: int, path: str, payload: str) -> Tuple[int, Dict[str, str], str]:
+    url = f"http://127.0.0.1:{port}{path}"
+    req = urllib.request.Request(url, data=payload.encode("utf-8"), method="POST")
+    req.add_header("Content-Type", "application/json")
+    try:
+        with urllib.request.urlopen(req) as resp:
+            return (
+                resp.status,
+                {k.lower(): v for k, v in resp.headers.items()},
+                resp.read().decode("utf-8"),
+            )
+    except urllib.error.HTTPError as e:
+        headers = {k.lower(): v for k, v in e.headers.items()}
+        body = e.read().decode("utf-8")
+        return (e.code, headers, body)
 
 
 def get(port: int, path: str) -> Tuple[int, Dict[str, str], str]:
@@ -130,6 +163,92 @@ def test_unknown_path_is_json_404(server):
     assert status == 404
     assert headers["content-type"].startswith("application/json")
     assert "error" in json.loads(body)
+
+
+# ------------------------------------------------------------- scan API
+
+
+def test_api_scan_runs_and_completes(server, tmp_path):
+    port, _b, _n = server
+    status, _h, body = post(
+        port, "/api/scan", json.dumps({"host": "127.0.0.1", "skip_scan": True})
+    )
+    assert status == 202
+    job_id = json.loads(body)["id"]
+
+    deadline = time.time() + 30
+    job = None
+    while time.time() < deadline:
+        s, _h, b = get(port, f"/api/scan?id={job_id}")
+        assert s == 200
+        job = json.loads(b)
+        if job["status"] != "running":
+            break
+        time.sleep(0.3)
+    assert job is not None and job["status"] == "done", job
+    json_reports = [f for f in job["reports"] if f.endswith(".json")]
+    assert json_reports, job  # defaults are json+html
+
+    # The new report must now be visible through the regular endpoints.
+    s, _h, b = get(port, f"/api/report?file={json_reports[0]}")
+    assert s == 200
+    assert json.loads(b)["host"] == "127.0.0.1"
+    s, _h, b = get(port, "/api/list")
+    assert json_reports[0] in json.loads(b)["reports"]
+
+
+def test_api_scan_disabled_on_public_bind(public_server):
+    status, _h, body = post(
+        public_server, "/api/scan", json.dumps({"host": "127.0.0.1"})
+    )
+    assert status == 403
+    assert "non-loopback" in json.loads(body)["error"]
+
+
+def test_api_scan_bad_bodies(server):
+    port, _b, _n = server
+    for payload in ("", "not json", "{}", '{"host": "x", "ports": "1024-1"}'):
+        status, _h, body = post(port, "/api/scan", payload)
+        assert status == 400, (payload, body)
+        assert "error" in json.loads(body)
+
+
+def test_api_scan_unknown_id(server):
+    port, _b, _n = server
+    status, _h, body = get(port, "/api/scan?id=nope")
+    assert status == 404
+
+
+def test_api_post_unknown_endpoint(server):
+    port, _b, _n = server
+    status, _h, body = post(port, "/api/nope", "{}")
+    assert status == 404
+    assert "error" in json.loads(body)
+
+
+def test_parse_scan_request_valid():
+    p = web.parse_scan_request({"host": "10.0.0.5", "ports": "80,443"})
+    assert p["host"] == "10.0.0.5"
+    assert p["ports"] == "80,443"
+    assert p["threads"] == 256
+    assert p["skip_scan"] is False
+    assert p["formats"] == ["json", "html"]
+
+
+def test_parse_scan_request_rejects_bad_values():
+    import pytest
+
+    for body in (
+        None,
+        "[]",
+        {"host": ""},
+        {"host": "x", "threads": 0},
+        {"host": "x", "timeout": 999},
+        {"host": "x", "formats": ["pdf"]},
+        {"host": "x", "ports": "99999"},
+    ):
+        with pytest.raises(ValueError):
+            web.parse_scan_request(body)
 
 
 def test_web_main_serves_and_stops(monkeypatch, tmp_path, capsys):
