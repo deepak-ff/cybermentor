@@ -164,6 +164,20 @@ def test_diff_reports_identical():
     assert out["diffs"] == []
 
 
+def test_diff_reports_ports_delta():
+    a = {"host": "a", "checks": [], "open_ports": [{"port": 22}, {"port": 80}]}
+    b = {"host": "b", "checks": [], "open_ports": [{"port": 443}]}
+    out = web.diff_reports(a, b)
+    assert out["ports_added"] == [443]
+    assert out["ports_removed"] == [22, 80]
+
+
+def test_diff_reports_missing_ports_key():
+    out = web.diff_reports({"host": "a", "checks": []}, {"host": "b", "checks": []})
+    assert out["ports_added"] == []
+    assert out["ports_removed"] == []
+
+
 def test_diff_reports_added_removed():
     a = {"host": "a", "checks": [{"id": "A", "level": "PASS", "title": "ta"}]}
     b = {"host": "b", "checks": [{"id": "B", "level": "FAIL", "title": "tb"}]}

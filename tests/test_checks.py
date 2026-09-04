@@ -491,6 +491,25 @@ def test_net_003_no_tool(monkeypatch):
     assert "0 listening" in res.detail
 
 
+def test_net_003_windows_netstat(monkeypatch):
+    """Windows netstat -ano: only LISTENING lines count, -tulnp is invalid."""
+    netstat_out = (
+        "Active Connections\n"
+        "  Proto  Local Address          Foreign Address        State  PID\n"
+        "  TCP    0.0.0.0:135            0.0.0.0:0              LISTENING 924\n"
+        "  TCP    [::]:445               [::]:0                 LISTENING 140\n"
+        "  TCP    192.168.1.5:51234      93.184.216.34:443      ESTABLISHED 4000\n"
+        "  UDP    [::]:5353              *[:*]                             123\n"
+    )
+    monkeypatch.setattr(checks.os, "name", "nt")
+    monkeypatch.setattr(checks, "_cmd", fake_cmd({"netstat": (0, netstat_out)}))
+    res = run("NET-003")
+    assert res.level == Level.INFO
+    # 135 + 445 (+ UDP 5353 line has no LISTENING state) -> 2 ports
+    assert "2 listening" in res.detail
+    assert "netstat -ano" in res.detail
+
+
 @pytest.mark.parametrize(
     "val,expected",
     [(None, Level.SKIP), ("1\n", Level.PASS), ("2\n", Level.PASS), ("0\n", Level.FAIL)],
@@ -602,20 +621,23 @@ def test_misc_002(monkeypatch, mode, expected):
 # ------------------------------------------------------------------- Windows
 
 
+def _netsh_allprofiles(state_map):
+    """Build real `netsh advfirewall show allprofiles state` output."""
+    sep = "-" * 59
+    parts = []
+    for name, state in state_map.items():
+        parts.append(f"{name} Profile Settings:\n{sep}\nState: {state}\n")
+    return "\n".join(parts)
+
+
 def test_win_001_all_on(monkeypatch):
-    out = (
-        "Domain Profile\nFirewall state: ON\n\n"
-        "Private Profile\nFirewall state: ON\n\n"
-        "Public Profile\nFirewall state: ON\n"
-    )
+    out = _netsh_allprofiles({"Domain": "ON", "Private": "ON", "Public": "ON"})
     monkeypatch.setattr(checks, "_cmd", fake_cmd({"netsh": (0, out)}))
     assert run("WIN-001").level == Level.PASS
 
 
 def test_win_001_one_off(monkeypatch):
-    out = (
-        "Domain Profile\nFirewall state: ON\n\n" "Public Profile\nFirewall state: OFF\n"
-    )
+    out = _netsh_allprofiles({"Domain": "ON", "Private": "ON", "Public": "OFF"})
     monkeypatch.setattr(checks, "_cmd", fake_cmd({"netsh": (0, out)}))
     assert run("WIN-001").level == Level.FAIL
 

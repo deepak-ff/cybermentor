@@ -739,16 +739,33 @@ def check_icmp_redirects(host: str) -> CheckResult:
     platforms=(Platform.ANY,),
 )
 def check_listening_ports(host: str) -> CheckResult:
-    out = _cmd(["ss", "-tulnp"]) or _cmd(["netstat", "-tulnp"])
-    count = 0
-    if out is not None:
-        ports = re.findall(r":(\d+)\s", out[1])
-        count = len(set(ports))
+    is_win = os.name == "nt"
+    if is_win:
+        # Windows netstat: only -ano is valid; count LISTENING lines only.
+        out = _cmd(["netstat", "-ano"])
+        hint = "netstat -ano"
+    else:
+        out = _cmd(["ss", "-tulnp"]) or _cmd(["netstat", "-tulnp"])
+        hint = "ss -tulnp"
+    ports = set()
+    if out is not None and out[0] == 0:
+        for line in out[1].splitlines():
+            if is_win:
+                if "LISTENING" not in line.upper():
+                    continue
+                parts = line.split()
+                if len(parts) < 2:
+                    continue
+                port = parts[1].rsplit(":", 1)[-1]
+                if port.isdigit():
+                    ports.add(int(port))
+            else:
+                ports.update(int(p) for p in re.findall(r":(\d+)\s", line))
     return _res(
         "NET-003",
         host,
         Level.INFO,
-        f"{count} listening port(s) detected (see 'ss -tulnp')",
+        f"{len(ports)} listening port(s) detected (see '{hint}')",
         "Close or restrict unused listening services.",
     )
 
@@ -956,13 +973,16 @@ def check_win_firewall(host: str) -> CheckResult:
     if out is None:
         return _res("WIN-001", host, Level.SKIP, "netsh not available")
     _rc, text = out
-    states = re.findall(r"firewall state\s*:\s*(\w+)", text, re.IGNORECASE)
-    if not states:
+    # Real output (all Windows 10/11 builds observed):
+    #   Domain Profile Settings:\n----...\nState: ON\n ...
+    states = re.findall(r"^\s*state\s*:\s*(\w+)", text, re.IGNORECASE | re.MULTILINE)
+    if len(states) != 3:
         return _res(
             "WIN-001",
             host,
             Level.SKIP,
-            f"unrecognized netsh output: {text[:80]!r}",
+            "expected 3 profile states in netsh output "
+            "(localized Windows may not be parseable)",
         )
     off = [s for s in states if s.casefold() != "on"]
     return _res(

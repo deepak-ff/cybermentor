@@ -73,7 +73,26 @@ def diff_reports(a: dict, b: dict) -> dict:
                     "title": b_check.get("title"),
                 }
             )
-    return {"base": a.get("host"), "new": b.get("host"), "diffs": diffs}
+    # Open-port delta: config checks always run on the local host, so two
+    # reports for different targets often have identical check levels but
+    # very different port scans — surface that, not just "No differences".
+    a_ports = {
+        p.get("port")
+        for p in a.get("open_ports", [])
+        if isinstance(p, dict) and isinstance(p.get("port"), int)
+    }
+    b_ports = {
+        p.get("port")
+        for p in b.get("open_ports", [])
+        if isinstance(p, dict) and isinstance(p.get("port"), int)
+    }
+    return {
+        "base": a.get("host"),
+        "new": b.get("host"),
+        "diffs": diffs,
+        "ports_added": sorted(b_ports - a_ports),
+        "ports_removed": sorted(a_ports - b_ports),
+    }
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -210,18 +229,30 @@ async function doDiff(){
   const url='/api/diff?base='+encodeURIComponent(b)+'&new='+encodeURIComponent(n);
   const obj=await (await fetch(url)).json();
   const d=document.getElementById('diff');
-  if(!obj.diffs.length){
+  const added=obj.ports_added||[];
+  const removed=obj.ports_removed||[];
+  if(!obj.diffs.length && !added.length && !removed.length){
     d.innerHTML='<p class="muted">No differences found</p>';
     return;
   }
-  let out='<table><tr><th>ID</th><th>Title</th><th>From</th><th>To</th></tr>';
-  obj.diffs.forEach(x=>{
-    out+='<tr><td class="mono">'+esc(x.id)+'</td>';
-    out+='<td>'+esc(x.title||'')+'</td>';
-    out+='<td>'+cell(x.from,'new')+'</td>';
-    out+='<td>'+cell(x.to,'gone')+'</td></tr>';
-  });
-  out+='</table>';
+  let out='';
+  if(obj.diffs.length){
+    out+='<table><tr><th>ID</th><th>Title</th><th>From</th><th>To</th></tr>';
+    obj.diffs.forEach(x=>{
+      out+='<tr><td class="mono">'+esc(x.id)+'</td>';
+      out+='<td>'+esc(x.title||'')+'</td>';
+      out+='<td>'+cell(x.from,'new')+'</td>';
+      out+='<td>'+cell(x.to,'gone')+'</td></tr>';
+    });
+    out+='</table>';
+  }
+  if(added.length||removed.length){
+    out+='<p class="muted">Open ports &mdash; added: ';
+    out+=added.length?added.map(String).join(', '):'none';
+    out+=' &middot; removed: ';
+    out+=removed.length?removed.map(String).join(', '):'none';
+    out+='</p>';
+  }
   d.innerHTML=out;
 }
 window.onload=refresh;
